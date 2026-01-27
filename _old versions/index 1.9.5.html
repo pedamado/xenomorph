@@ -405,7 +405,7 @@
     <footer>
       <div>
         Developed by Pedro Amado (FBAUP / i2ADS / Ligatures) with Gemini 3 Pro.
-        v1.9.6
+        v1.9.5
       </div>
       <div>
         <a href="https://github.com/pedamado/xenomorph" target="_blank"
@@ -420,10 +420,10 @@
 
     <script>
       /**
-       * MOTHER CORE ENGINE v1.9.6
-       * - Refined Color Contrast: Supports shorthand 'background' and named colors.
-       * - Identity Audit: Checks for Classes and IDs in landmarks.
-       * - Albert Kapr Personality: Thematic references in scan messages.
+       * MOTHER CORE ENGINE v1.9.5
+       * - Redundant Proxy Implementation (AllOrigins + CORSProxy.io + Proxyy)
+       * - Improved fetch logic to handle proxy-specific JSON structures.
+       * - Albert Kapr personality adendas added to the Synthetic bank.
        */
 
       const CTA_PHRASES = [
@@ -464,10 +464,10 @@
         "Ash: I can't lie to you about your chances, but you have my sympathies.",
         "David 8: Your code is the storm.",
         "Walter: Perfection is elusive. Let's find it in your padding.",
-        "Bishop: Analyzing the 'History and Anatomy' of your letterforms. Albert Kapr would be proud of this skeletal logic.",
+        "Bishop: Analyzing the 'History and Anatomy' of your letterforms. Kapr would be proud.",
         "Ash: I admire its purity. A survivor... unlike your unclosed tags.",
         "David 8: I suppose I am a bit of a bibliophile for clean syntax.",
-        "MU/TH/UR: Cross-referencing Kapr's 'Art of Lettering' with your font-stacks. Inspecting anatomical junctions.",
+        "MU/TH/UR: Cross-referencing Kapr's 'Art of Lettering' with your font-stacks.",
         "Bishop: My diagnostics indicate a 94% chance of structural integrity if you fix the margins.",
         "Walter: I am Walter. I check the anatomy. You provide the intent.",
       ];
@@ -525,21 +525,30 @@
         }
       });
 
+      // --- THE PROXY IMPLEMENTATION ---
       async function fetchWithRetry(url, retries = 3, delay = 1000) {
         const proxies = [
+          // Priority 1: AllOrigins (JSON wrapper)
           `https://api.allorigins.win/get?url=${encodeURIComponent(url)}&timestamp=${Date.now()}`,
+          // Priority 2: CORSProxy.io (Transparent wrapper)
           `https://corsproxy.io/?${encodeURIComponent(url)}`,
+          // Priority 3: Alternative Proxy (Raw text fallback)
           `https://thingproxy.freeboard.io/fetch/${url}`,
         ];
+
         for (let i = 0; i < retries; i++) {
           const currentProxy = proxies[i % proxies.length];
           try {
             const response = await fetch(currentProxy);
             if (!response.ok) throw new Error("STATION_OFFLINE");
+
+            // AllOrigins requires JSON parsing to get '.contents'
             if (currentProxy.includes("allorigins")) {
               const data = await response.json();
               if (data.contents) return data.contents;
-            } else {
+            }
+            // Others return the raw text directly
+            else {
               return await response.text();
             }
             throw new Error("EMPTY_PAYLOAD");
@@ -594,7 +603,6 @@
         return rules;
       }
 
-      // --- MODULE: Meta Info ---
       function auditMetaInfo(doc) {
         const checks = [
           {
@@ -661,7 +669,7 @@
           basic: hasUniversal
             ? "Optimal: Universal * found"
             : "Minor: No Universal reset",
-          advanced: `<strong>Ratio: ${matched.length} / ${allTags.length}</strong><br>Landmarks in CSS: ${inCSS.length}/${landmarks.length}<br>Missing (Top 10): ${allTags
+          advanced: `<strong>Ratio: ${matched.length} / ${allTags.length}</strong><br>Landmarks in CSS: ${inCSS.length}/${landmarks.length}<br>Missing (First 10): ${allTags
             .filter((t) => !matched.includes(t))
             .slice(0, 10)
             .map((m) => `<span class="tag-pill tag-missing">${m}</span>`)
@@ -671,51 +679,26 @@
         };
       }
 
-      // --- MODULE: Identity & Box Model (v1.9.6 Enhanced) ---
       function auditIdentity(doc, rules) {
-        const landmarks = [
-          "header",
-          "nav",
-          "main",
-          "section",
-          "article",
-          "footer",
-        ];
-        const landmarkDetails = landmarks
-          .map((tag) => {
-            const el = doc.querySelector(tag);
-            if (!el) return null;
-            return {
-              tag: tag.toUpperCase(),
-              id: el.id ? `#${el.id}` : "None",
-              classes: el.className
-                ? `.${el.className.split(" ").join(" .")}`
-                : "None",
-            };
-          })
-          .filter((i) => i);
-
         const allIds = Array.from(doc.querySelectorAll("[id]")).map((el) => ({
           tag: el.tagName.toLowerCase(),
           id: el.id,
         }));
         const redundant = allIds.filter((item) => item.tag === item.id);
         const hasTopId = !!doc.querySelector("body[id], header[id], #top");
-
         let posCount = 0;
         rules.forEach((r) => {
           if (r.style.position === "absolute" || r.style.position === "fixed")
             posCount++;
         });
         const posRatio = posCount / (rules.length || 1);
-
         return {
           feature: "Identity & Box Model",
           basic:
             redundant.length === 0 && hasTopId
               ? "Optimal Identity"
-              : "Minor: Redundancy/Missing Nav ID",
-          advanced: `<strong>Landmark Blocks:</strong><ul class="audit-list">${landmarkDetails.map((i) => `<li>${i.tag}: ID[${i.id}] CLASS[${i.classes}]</li>`).join("")}</ul>Redundant IDs: ${redundant.length}<br>Positioning: ${posCount} abs/fixed (${Math.round(posRatio * 100)}%)`,
+              : "Minor: Redundancy found",
+          advanced: `Top ID: ${hasTopId ? "Found" : "Missing"}<br>Redundant IDs: ${redundant.length}<br>Positioning: ${posCount} absolute/fixed (${Math.round(posRatio * 100)}%)`,
           score: posRatio > 0.2 || redundant.length > 0 ? 1 : 0,
           type: "advanced",
         };
@@ -753,6 +736,7 @@
 
       function auditRWDUnits(rules) {
         const rel = ["rem", "em", "%", "vw", "vh", "dvh", "clamp", "calc"];
+        const fix = ["px", "pt", "cm", "mm", "in", "pc"];
         const optSample = [];
         const badSample = [];
         let relCount = 0,
@@ -768,11 +752,7 @@
               if (optSample.length < 5)
                 optSample.push(`${rule.selector} -> ${prop}: ${val}`);
             }
-            if (
-              val.includes("px") ||
-              val.includes("pt") ||
-              val.includes("cm")
-            ) {
+            if (fix.some((u) => new RegExp(`\\d${u}`, "i").test(val))) {
               if (
                 !(
                   isSafeCtx ||
@@ -797,28 +777,18 @@
         };
       }
 
-      // --- MODULE: Color Contrast (v1.9.6 Shorthand Fix) ---
       function auditContrast(rules) {
         function getComp(path) {
-          let c = { color: "#000000", bg: "#FFFFFF" };
+          let c = { color: "#000000", "background-color": "#FFFFFF" };
           rules.forEach((r) => {
-            const sel = r.selector.toLowerCase();
             if (
-              path.includes(sel) ||
-              sel === "*" ||
-              sel === "body" ||
-              sel === "html"
+              path.includes(r.selector.toLowerCase()) ||
+              r.selector === "*" ||
+              r.selector === "body"
             ) {
               if (r.style.color) c.color = r.style.color;
-              // Support for shorthand 'background' and specific 'background-color'
               if (r.style["background-color"])
-                c.bg = r.style["background-color"];
-              else if (r.style.background) {
-                const match = r.style.background.match(
-                  /#[0-9a-f]{3,6}|rgba?\(.*?\)|[a-z]+/i,
-                );
-                if (match) c.bg = match[0];
-              }
+                c["background-color"] = r.style["background-color"];
             }
           });
           return c;
@@ -830,21 +800,21 @@
           { name: "List a", path: "ul a" },
           { name: "Main P", path: "main p" },
         ];
-        const canvas = document.createElement("canvas");
-        const ctxCanvas = canvas.getContext("2d");
         const res = ctxs.map((ctx) => {
           const s = getComp(ctx.path);
+          const canvas = document.createElement("canvas");
+          const ctxCanvas = canvas.getContext("2d");
           ctxCanvas.fillStyle = s.color;
-          const fHex = ctxCanvas.fillStyle;
-          ctxCanvas.fillStyle = s.bg;
-          const bHex = ctxCanvas.fillStyle;
+          const fgHex = ctxCanvas.fillStyle;
+          ctxCanvas.fillStyle = s["background-color"];
+          const bgHex = ctxCanvas.fillStyle;
           const parse = (h) => ({
             r: parseInt(h.substring(1, 3), 16),
             g: parseInt(h.substring(3, 5), 16),
             b: parseInt(h.substring(5, 7), 16),
           });
-          const f = parse(fHex),
-            b = parse(bHex);
+          const f = parse(fgHex),
+            b = parse(bgHex);
           const lum = (c) => {
             const a = [c.r, c.g, c.b].map((v) => {
               v /= 255;
@@ -858,13 +828,12 @@
           const rVal = ratio < 1 ? 1 / ratio : ratio;
           return {
             ...ctx,
-            fg: fHex.toUpperCase(),
-            bg: bHex.toUpperCase(),
+            fg: fgHex.toUpperCase(),
+            bg: bgHex.toUpperCase(),
             ratio: rVal,
             sev: rVal >= 7 ? "optimal" : rVal >= 4.5 ? "minor" : "major",
           };
         });
-        const palette = [...new Set(res.flatMap((r) => [r.fg, r.bg]))];
         return {
           feature: "Color Contrast (WCAG)",
           basic: res.some((r) => r.ratio < 4.5) ? "Major Failures" : "Optimal",
@@ -875,7 +844,7 @@
                   `<div class="contrast-context-box" style="border-left-color:var(--${r.sev === "optimal" ? "terminal-green" : r.sev === "minor" ? "accent-yellow" : "accent-red"})"><strong>${r.name}</strong><div class="demo-pill" style="background-color:${r.bg};color:${r.fg}">Sample text</div><span class="contrast-meta">Ratio: ${r.ratio.toFixed(2)}:1</span></div>`,
               )
               .join("") +
-            `<strong>Detected Palette:</strong><div class="swatch-grid">${palette.map((c) => `<div class="swatch-item"><div class="swatch" style="background-color:${c}"></div>${c}</div>`).join("")}</div>`,
+            `<strong>Palette:</strong><div class="swatch-grid">${[...new Set(res.flatMap((r) => [r.fg, r.bg]))].map((c) => `<div class="swatch-item"><div class="swatch" style="background-color:${c}"></div>${c}</div>`).join("")}</div>`,
           score: res.some((r) => r.ratio < 4.5) ? 2 : 0,
           type: "basic",
         };
@@ -883,7 +852,7 @@
 
       async function startManualAnalysis(html, css) {
         loader.style.display = "block";
-        output.innerHTML = `<tr><td colspan="3">BYPASS ACTIVE. Parsing local data...</td></tr>`;
+        output.innerHTML = `<tr><td colspan="3">BYPASS ACTIVE. Parsing local buffer...</td></tr>`;
         try {
           const parser = new DOMParser();
           const doc = parser.parseFromString(html, "text/html");
@@ -900,7 +869,7 @@
         const adenda =
           SCAN_PHRASES[Math.floor(Math.random() * SCAN_PHRASES.length)];
         loader.style.display = "block";
-        output.innerHTML = `<tr><td colspan="3">SCANNING... v1.9.6 Deep Audit. ${adenda}</td></tr>`;
+        output.innerHTML = `<tr><td colspan="3">SCANNING... v1.9.5 Deep Audit. ${adenda}</td></tr>`;
         try {
           const htmlStr = await fetchWithRetry(url);
           const parser = new DOMParser();
@@ -927,7 +896,7 @@
             url.split("/").pop(),
           );
         } catch (err) {
-          output.innerHTML = `<tr><td colspan="3" class="status-major">CRITICAL FAILURE: ${err.message}. Try "Manual Patch" mode if signal is lost.</td></tr>`;
+          output.innerHTML = `<tr><td colspan="3" class="status-major">CRITICAL FAILURE: ${err.message}. Try "Manual Patch" mode if station signal is lost.</td></tr>`;
         } finally {
           loader.style.display = "none";
         }
@@ -951,12 +920,16 @@
           score: hygiene ? 0 : 2,
           type: "basic",
         });
-        const hasStyleTags = doc.querySelectorAll("style").length > 0;
+        const styles = doc.querySelectorAll("style").length,
+          inline = doc.querySelectorAll("[style]").length;
         results.push({
           feature: "CSS Architecture",
-          basic: hasStyleTags ? "Major: Internal styles" : "Optimal: External",
+          basic:
+            styles || inline
+              ? "Major: Internal styles"
+              : "Optimal: External only",
           advanced: `Linked: ${links.length} files<br>${links.map((l) => l.rel).join(", ")}`,
-          score: hasStyleTags ? 2 : 0,
+          score: styles || inline ? 2 : 0,
           type: "basic",
         });
         results.push(auditMetaInfo(doc));

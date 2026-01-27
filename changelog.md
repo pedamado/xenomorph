@@ -1,5 +1,17 @@
 # Changelog
 
+## **[1.9.6] - 2026-01-27**
+
+### **Fixed**
+
+- **Chromatic Auditor:** Improved shorthand detection. The engine now correctly parses the `background` property (in addition to `background-color`) to extract palettes from complex declarations and named colors (e.g., `darkcyan`).
+- **Identity Module:** Added explicit checks for IDs and Classes on main structural blocks (`header`, `nav`, `main`, `section`, `footer`).
+- **Data Persistence:** Fixed a bug where manual overrides sometimes failed to trigger the full diagnostic suite.
+
+### **Added**
+
+- **Anatomical Summary:** Diagnostic messages now include references to skeletal junctions and typographic anatomy, inspired by Albert Kapr’s pedagogical approach to structure.
+
 ## **[1.9.3] - 2026-01-27**
 
 ### **Added**
