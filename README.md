@@ -2,6 +2,9 @@
 
 Welcome to the **Xenomorph Website Parser**. This is a custom-built HTML/CSS parser and inspector designed specifically for the Faculty of Fine Arts of the University of Porto Communication Design bachelor students. It goes beyond the W3C validator by enforcing the specific "Progressive Enhancement" and "Mobile First" methodologies taught in class.
 
+<img width="1287" height="878" alt="Screenshot 2026-01-27 at 01 59 58" src="https://github.com/user-attachments/assets/4cd0d1b2-3fb9-4946-afaf-662b10944950" />
+
+
 ## How it works
 
 1. **Visual Analysis:** Before running the code check, perform your manual visual audit.
