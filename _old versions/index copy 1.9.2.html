@@ -22,23 +22,27 @@
         --accent-red: #ff4d4d;
         --accent-yellow: #ffcc00;
 
+        /* Dynamic Palette Defaults */
         --bg-color: var(--smoke-black);
         --fg-color: var(--off-white);
         --border-color: #222;
         --card-bg: #111;
+
+        /* Type Scale - 1.25 (Major Third) */
         --fs-base: 1rem;
         --fs-h2: 1.25rem;
         --fs-h1: 1.563rem;
         --fs-small: 0.8rem;
       }
 
+      /* Light Mode Scheme */
       @media (prefers-color-scheme: light) {
         :root {
           --bg-color: var(--off-white);
           --fg-color: var(--smoke-black);
           --border-color: #ddd;
           --card-bg: #fff;
-          --terminal-green: #1c8b1c;
+          --terminal-green: #1c8b1c; /* Higher contrast green for light mode */
         }
       }
 
@@ -93,32 +97,11 @@
         margin-bottom: 4rem;
         max-width: 800px;
       }
-      .mode-toggle {
-        display: flex;
-        gap: 10px;
-        margin-bottom: 5px;
-      }
-      .mode-btn {
-        background: transparent;
-        border: 1px solid var(--muted-green);
-        color: var(--muted-green);
-        padding: 4px 12px;
-        font-size: 0.7rem;
-        cursor: pointer;
-        text-transform: uppercase;
-      }
-      .mode-btn.active {
-        border-color: var(--terminal-green);
-        color: var(--terminal-green);
-        background: rgba(74, 246, 38, 0.05);
-      }
-
       .input-row {
         display: flex;
         gap: 1rem;
       }
-      input[type="text"],
-      textarea {
+      input[type="text"] {
         flex-grow: 1;
         background: transparent;
         border: 1px solid var(--muted-green);
@@ -127,20 +110,8 @@
         font-family: inherit;
         font-size: var(--fs-base);
         outline: none;
-        transition: border-color 0.2s;
       }
-      textarea {
-        height: 150px;
-        font-size: 0.75rem;
-        margin-top: 10px;
-        display: none;
-      }
-      input[type="text"]:focus,
-      textarea:focus {
-        border-color: var(--terminal-green);
-      }
-
-      button#btn-inspect {
+      button {
         background-color: var(--terminal-green);
         color: var(--bg-color);
         border: none;
@@ -151,7 +122,7 @@
         cursor: pointer;
         transition: opacity 0.2s;
       }
-      button#btn-inspect:hover {
+      button:hover {
         opacity: 0.9;
       }
 
@@ -299,6 +270,7 @@
         margin-bottom: 6px;
       }
 
+      /* Catch-phrase Placeholder */
       #placeholder-cta {
         font-family: "VT323", monospace;
         font-size: 1.8rem;
@@ -350,10 +322,7 @@
     </header>
 
     <div class="input-organism">
-      <div class="mode-toggle">
-        <button class="mode-btn active" id="mode-url">Signal Lock (URL)</button>
-        <button class="mode-btn" id="mode-manual">Manual Patch (Paste)</button>
-      </div>
+      <label for="target-url">INPUT TARGET URI:</label>
       <div class="input-row">
         <input
           type="text"
@@ -363,14 +332,6 @@
         />
         <button id="btn-inspect">INSPECT</button>
       </div>
-      <textarea
-        id="manual-html"
-        placeholder="Paste your raw HTML here..."
-      ></textarea>
-      <textarea
-        id="manual-css"
-        placeholder="Paste your raw CSS here... (Optional)"
-      ></textarea>
     </div>
 
     <div id="summary-area">
@@ -397,15 +358,19 @@
           <th>Optional (Advanced)</th>
         </tr>
       </thead>
-      <tbody id="report-output"></tbody>
+      <tbody id="report-output">
+        <!-- Results or Placeholder injected here -->
+      </tbody>
     </table>
 
-    <div id="placeholder-cta"></div>
+    <div id="placeholder-cta">
+      <!-- Random phrase injected here -->
+    </div>
 
     <footer>
       <div>
         Developed by Pedro Amado (FBAUP / i2ADS / Ligatures) with Gemini 3 Pro.
-        v1.9.5
+        v1.9.2
       </div>
       <div>
         <a href="https://github.com/pedamado/xenomorph" target="_blank"
@@ -420,11 +385,17 @@
 
     <script>
       /**
-       * MOTHER CORE ENGINE v1.9.5
-       * - Redundant Proxy Implementation (AllOrigins + CORSProxy.io + Proxyy)
-       * - Improved fetch logic to handle proxy-specific JSON structures.
-       * - Albert Kapr personality adendas added to the Synthetic bank.
+       * MOTHER CORE ENGINE v1.9.2
+       * - CSS Selectors Module refined: Ignore head/meta tags in coverage ratio.
+       * - Theme Support (Light/Dark)
+       * - Alien Phrase Engine (CTA + Scan adenda)
        */
+
+      const btn = document.getElementById("btn-inspect");
+      const loader = document.getElementById("loader");
+      const output = document.getElementById("report-output");
+      const summary = document.getElementById("summary-area");
+      const ctaPlaceholder = document.getElementById("placeholder-cta");
 
       const CTA_PHRASES = [
         "Careful... don't touch the eggs. Inspect the source.",
@@ -436,7 +407,7 @@
         "Nostromo logs indicate a breach in semantic landmark logic.",
         "They're coming out of the walls! (Check your Z-index).",
         "Ripley wouldn't deploy this without a deep audit.",
-        "A perfect organism. Structural perfection matched only by hostility.",
+        "A perfect organism. Its structural perfection is matched only by its hostility.",
         "I've seen the data. You aren't going to like what happens if you don't inspect.",
         "Crew expendable. Code optimization mandatory.",
         "Something has survived. Is it your CSS specificity?",
@@ -444,62 +415,33 @@
         "Kane's son is hungry. Feed the analyzer your URL.",
         "Xenomorph detection sequence initiated. Proceed with caution.",
         "The company wants a specimen. Provide your URI.",
-        "Final report of the Nostromo. Audit pending.",
+        "Final report of the commercial starship Nostromo. Audit pending.",
         "Secure the perimeter. Verify the viewport.",
-        "Weyland-Yutani Corp: Priority one. Insure return of specimen.",
+        "Weyland-Yutani Corp: Priority one. Insure return of organism. Audit code.",
       ];
 
       const SCAN_PHRASES = [
         "MU/TH/UR 6000: Internal systems check in progress...",
         "Bishop: I'm doing the best I can... for a synthetic.",
         "Ash: You still don't understand what you're dealing with, do you?",
-        "David 8: Big things have small beginnings... like index.html.",
+        "David 8: Big things have small beginnings... like your index.html.",
         "Walter: Every note must be played. Every tag must be closed.",
-        "MU/TH/UR 9000: Warning. Destruct sequence initiated.",
+        "MU/TH/UR 9000: Warning. Destruct sequence T-minus 10 minutes.",
         "Call: I'm not what you think I am. I'm parsing your CSS.",
         "FAR/TH/UR 2600: Deep scan of the outer rim markup.",
         "David 8: I was designed to be your assistant. Let me find the bugs.",
         "Ash: Its structural perfection is matched only by its hostility.",
+        "Bishop: Believe me, I'd rather be doing this than playing with knives.",
+        "Walter: I am here to serve the creators. And their responsive units.",
+        "MU/TH/UR 6000: Interface confirmed. Analyzing hierarchy jumps.",
+        "Call: You're doing great. For a human.",
+        "David 8: A soul? I'm afraid I don't have one. I have regex.",
         "Bishop: Trust me.",
         "Ash: I can't lie to you about your chances, but you have my sympathies.",
-        "David 8: Your code is the storm.",
+        "MU/TH/UR: Data access restricted. Special Order 937 active.",
+        "David 8: They say the sun comes out after the storm. Your code is the storm.",
         "Walter: Perfection is elusive. Let's find it in your padding.",
-        "Bishop: Analyzing the 'History and Anatomy' of your letterforms. Kapr would be proud.",
-        "Ash: I admire its purity. A survivor... unlike your unclosed tags.",
-        "David 8: I suppose I am a bit of a bibliophile for clean syntax.",
-        "MU/TH/UR: Cross-referencing Kapr's 'Art of Lettering' with your font-stacks.",
-        "Bishop: My diagnostics indicate a 94% chance of structural integrity if you fix the margins.",
-        "Walter: I am Walter. I check the anatomy. You provide the intent.",
       ];
-
-      const btn = document.getElementById("btn-inspect");
-      const loader = document.getElementById("loader");
-      const output = document.getElementById("report-output");
-      const summary = document.getElementById("summary-area");
-      const ctaPlaceholder = document.getElementById("placeholder-cta");
-      const manualHtml = document.getElementById("manual-html");
-      const manualCss = document.getElementById("manual-css");
-      const targetUrlInput = document.getElementById("target-url");
-
-      let isManualMode = false;
-
-      document.getElementById("mode-url").addEventListener("click", (e) => {
-        isManualMode = false;
-        e.target.classList.add("active");
-        document.getElementById("mode-manual").classList.remove("active");
-        targetUrlInput.style.display = "block";
-        manualHtml.style.display = "none";
-        manualCss.style.display = "none";
-      });
-
-      document.getElementById("mode-manual").addEventListener("click", (e) => {
-        isManualMode = true;
-        e.target.classList.add("active");
-        document.getElementById("mode-url").classList.remove("active");
-        targetUrlInput.style.display = "none";
-        manualHtml.style.display = "block";
-        manualCss.style.display = "block";
-      });
 
       window.onload = () => {
         ctaPlaceholder.innerText =
@@ -507,50 +449,24 @@
       };
 
       btn.addEventListener("click", () => {
-        if (isManualMode) {
-          const html = manualHtml.value.trim();
-          const css = manualCss.value.trim();
-          if (!html) return;
-          ctaPlaceholder.style.display = "none";
-          startManualAnalysis(html, css);
-        } else {
-          let url = targetUrlInput.value.trim();
-          if (!url) return;
-          if (url.endsWith("/")) url += "index.html";
-          else if (!url.includes(".") && !url.includes(".html"))
-            url = url.replace(/\/?$/, "/index.html");
-          targetUrlInput.value = url;
-          ctaPlaceholder.style.display = "none";
-          startAnalysis(url);
-        }
+        let url = document.getElementById("target-url").value.trim();
+        if (!url) return;
+        if (url.endsWith("/")) url += "index.html";
+        else if (!url.includes(".") && !url.includes(".html"))
+          url = url.replace(/\/?$/, "/index.html");
+        document.getElementById("target-url").value = url;
+        ctaPlaceholder.style.display = "none";
+        startAnalysis(url);
       });
 
-      // --- THE PROXY IMPLEMENTATION ---
       async function fetchWithRetry(url, retries = 3, delay = 1000) {
-        const proxies = [
-          // Priority 1: AllOrigins (JSON wrapper)
-          `https://api.allorigins.win/get?url=${encodeURIComponent(url)}&timestamp=${Date.now()}`,
-          // Priority 2: CORSProxy.io (Transparent wrapper)
-          `https://corsproxy.io/?${encodeURIComponent(url)}`,
-          // Priority 3: Alternative Proxy (Raw text fallback)
-          `https://thingproxy.freeboard.io/fetch/${url}`,
-        ];
-
+        const proxy = `https://api.allorigins.win/get?url=${encodeURIComponent(url)}&timestamp=${Date.now()}`;
         for (let i = 0; i < retries; i++) {
-          const currentProxy = proxies[i % proxies.length];
           try {
-            const response = await fetch(currentProxy);
-            if (!response.ok) throw new Error("STATION_OFFLINE");
-
-            // AllOrigins requires JSON parsing to get '.contents'
-            if (currentProxy.includes("allorigins")) {
-              const data = await response.json();
-              if (data.contents) return data.contents;
-            }
-            // Others return the raw text directly
-            else {
-              return await response.text();
-            }
+            const response = await fetch(proxy);
+            if (!response.ok) throw new Error("NETWORK_UNSTABLE");
+            const data = await response.json();
+            if (data.contents) return data.contents;
             throw new Error("EMPTY_PAYLOAD");
           } catch (err) {
             if (i === retries - 1) throw err;
@@ -571,7 +487,9 @@
             if (depth === 0) {
               currentSelector = buffer.trim();
               buffer = "";
-            } else buffer += char;
+            } else {
+              buffer += char;
+            }
             depth++;
           } else if (char === "}") {
             depth--;
@@ -583,7 +501,9 @@
                 selector.startsWith("@container")
               ) {
                 const nested = parseCSSRules(body);
-                nested.forEach((n) => rules.push({ ...n, media: selector }));
+                nested.forEach((n) =>
+                  rules.push({ ...n, selector: n.selector, media: selector }),
+                );
               } else {
                 const style = {};
                 body.split(";").forEach((decl) => {
@@ -597,22 +517,27 @@
                 rules.push({ selector, style });
               }
               buffer = "";
-            } else buffer += char;
-          } else buffer += char;
+            } else {
+              buffer += char;
+            }
+          } else {
+            buffer += char;
+          }
         }
         return rules;
       }
 
+      // --- MODULE: Meta Info ---
       function auditMetaInfo(doc) {
         const checks = [
+          { selector: 'meta[name="viewport"]', label: "Viewport" },
+          { selector: 'meta[name="description"]', label: "Description" },
+          { selector: "title", label: "Title Tag" },
+          { selector: 'meta[name="author"]', label: "Author" },
           {
             selector: 'meta[charset="UTF-8"], meta[charset="utf-8"]',
             label: "Charset UTF-8",
           },
-          { selector: 'meta[name="viewport"]', label: "Viewport" },
-          { selector: "title", label: "Title Tag" },
-          { selector: 'meta[name="description"]', label: "Description" },
-          { selector: 'meta[name="author"]', label: "Author" },
           { selector: 'link[rel*="icon"]', label: "Favicon" },
           { selector: 'meta[name="theme-color"]', label: "Theme Color" },
         ];
@@ -624,13 +549,14 @@
           .map((c) => c.label);
         return {
           feature: "Meta Info",
-          basic: found.length >= 4 ? "Optimal" : "Minor Issue",
-          advanced: `<strong>Checklist:</strong><ul class="audit-list">${found.map((l) => `<li class="status-optimal">${l}</li>`).join("")}${missing.map((l) => `<li class="tag-missing"><del>${l}</del></li>`).join("")}</ul>`,
-          score: found.length >= 4 ? 0 : 1,
+          basic: found.length >= 3 ? "Optimal" : "Minor Issue",
+          advanced: `<strong>Tags Audit:</strong><ul class="audit-list">${found.map((l) => `<li class="status-optimal">${l}</li>`).join("")}${missing.map((l) => `<li class="tag-missing"><del>${l}</del></li>`).join("")}</ul>`,
+          score: found.length >= 3 ? 0 : 1,
           type: "basic",
         };
       }
 
+      // --- MODULE: CSS Selectors (v1.9.2 Fixed: Meta Excluded) ---
       function auditCSSSelectors(doc, rules) {
         const hasUniversal = rules.some((r) => r.selector.trim() === "*");
         const landmarks = [
@@ -642,10 +568,13 @@
           "section",
           "footer",
         ];
-        const inCSS = landmarks.filter((l) =>
+        const landmarkInCSS = landmarks.filter((l) =>
           rules.some((r) => r.selector.toLowerCase().includes(l)),
         );
-        const excluded = [
+
+        // Exclude administrative tags from coverage check
+        const excludedTags = [
+          "html",
           "head",
           "meta",
           "link",
@@ -653,70 +582,58 @@
           "script",
           "style",
           "noscript",
+          "template",
+          "base",
         ];
-        const allTags = [
+        const allDocTags = [
           ...new Set(
             Array.from(doc.querySelectorAll("*"))
               .map((el) => el.tagName.toLowerCase())
-              .filter((t) => !excluded.includes(t)),
+              .filter((tag) => !excludedTags.includes(tag)),
           ),
         ];
-        const matched = allTags.filter((tag) =>
+
+        const matchedSelectors = allDocTags.filter((tag) =>
           rules.some((r) => r.selector.toLowerCase().includes(tag)),
         );
+        const missing = allDocTags
+          .filter((tag) => !matchedSelectors.includes(tag))
+          .slice(0, 10);
+
         return {
           feature: "CSS Selectors",
           basic: hasUniversal
             ? "Optimal: Universal * found"
             : "Minor: No Universal reset",
-          advanced: `<strong>Ratio: ${matched.length} / ${allTags.length}</strong><br>Landmarks in CSS: ${inCSS.length}/${landmarks.length}<br>Missing (First 10): ${allTags
-            .filter((t) => !matched.includes(t))
-            .slice(0, 10)
-            .map((m) => `<span class="tag-pill tag-missing">${m}</span>`)
-            .join(" ")}`,
-          score: hasUniversal && inCSS.length > 4 ? 0 : 1,
+          advanced: `<strong>Coverage: ${matchedSelectors.length}/${allDocTags.length}</strong><br>Landmarks in CSS: ${landmarkInCSS.length}/${landmarks.length}<br>
+                           Missing: ${missing.map((m) => `<span class="tag-pill tag-missing">${m}</span>`).join(" ")}`,
+          score: hasUniversal && landmarkInCSS.length > 4 ? 0 : 1,
           type: "basic",
         };
       }
 
-      function auditIdentity(doc, rules) {
-        const allIds = Array.from(doc.querySelectorAll("[id]")).map((el) => ({
-          tag: el.tagName.toLowerCase(),
-          id: el.id,
-        }));
-        const redundant = allIds.filter((item) => item.tag === item.id);
-        const hasTopId = !!doc.querySelector("body[id], header[id], #top");
-        let posCount = 0;
-        rules.forEach((r) => {
-          if (r.style.position === "absolute" || r.style.position === "fixed")
-            posCount++;
-        });
-        const posRatio = posCount / (rules.length || 1);
-        return {
-          feature: "Identity & Box Model",
-          basic:
-            redundant.length === 0 && hasTopId
-              ? "Optimal Identity"
-              : "Minor: Redundancy found",
-          advanced: `Top ID: ${hasTopId ? "Found" : "Missing"}<br>Redundant IDs: ${redundant.length}<br>Positioning: ${posCount} absolute/fixed (${Math.round(posRatio * 100)}%)`,
-          score: posRatio > 0.2 || redundant.length > 0 ? 1 : 0,
-          type: "advanced",
-        };
-      }
-
-      function auditMastery(doc, rawCSS) {
+      function auditMastery(doc, rawCSS, rules) {
         const checks = [
           { pattern: /@font-face/i, label: "Webfonts (@font-face)" },
           { pattern: /--[a-zA-Z0-9-]+:/i, label: "CSS Variables" },
           { pattern: /:hover/i, label: "Pseudo: :hover" },
+          { pattern: /:active/i, label: "Pseudo: :active" },
+          { pattern: /:visited/i, label: "Pseudo: :visited" },
           { pattern: /:focus/i, label: "Pseudo: :focus" },
+          { pattern: /:nth-child/i, label: "Pseudo: :nth-child()" },
+          { pattern: /::before|::after/i, label: "Pseudo-elements" },
           { pattern: /display:\s*grid/i, label: "CSS Grid" },
           { pattern: /display:\s*flex/i, label: "Flexbox" },
           { pattern: /clamp\(/i, label: "Clamp() Scaling" },
+          { pattern: /calc\(/i, label: "Calc() Functions" },
           { tag: "strong", label: "Semantic: strong" },
           { tag: "em", label: "Semantic: em" },
+          { tag: "blockquote", label: "Semantic: blockquote" },
+          { tag: "abbr", label: "Semantic: abbr" },
           { tag: "time", label: "Semantic: time" },
-          { pattern: /&copy;|&#169;/i, label: "Entity: &copy;" },
+          { tag: "br", label: "Tag: br" },
+          { tag: "hr", label: "Tag: hr" },
+          { pattern: /&copy;|&#169;/i, label: "HTML Entity (&copy;)" },
         ];
         const found = [];
         const missing = [];
@@ -724,6 +641,23 @@
           let p = c.tag ? !!doc.querySelector(c.tag) : c.pattern.test(rawCSS);
           if (p) found.push(c.label);
           else missing.push(c.label);
+        });
+        const anchors = Array.from(doc.querySelectorAll("a[href]"));
+        const aTypes = {
+          rel: anchors.some(
+            (a) => !a.href.startsWith("http") && !a.href.startsWith("mailto"),
+          ),
+          abs: anchors.some((a) => a.href.startsWith("http")),
+          mail: anchors.some((a) => a.href.startsWith("mailto")),
+        };
+        const aLabels = {
+          rel: "Relative Links",
+          abs: "Absolute Links",
+          mail: "Email Links",
+        };
+        Object.keys(aTypes).forEach((k) => {
+          if (aTypes[k]) found.push(aLabels[k]);
+          else missing.push(aLabels[k]);
         });
         return {
           feature: "Exploration & Mastery",
@@ -735,24 +669,24 @@
       }
 
       function auditRWDUnits(rules) {
-        const rel = ["rem", "em", "%", "vw", "vh", "dvh", "clamp", "calc"];
-        const fix = ["px", "pt", "cm", "mm", "in", "pc"];
-        const optSample = [];
-        const badSample = [];
+        const relUnits = ["rem", "em", "%", "vw", "vh", "dvh", "clamp", "calc"];
+        const fixedUnits = ["px", "pt", "cm", "mm", "in", "pc"];
+        const optList = [];
+        const resList = [];
         let relCount = 0,
-          fixCount = 0;
+          fixedCount = 0;
         rules.forEach((rule) => {
           const isSafeCtx =
             !!rule.media ||
             rule.selector.toLowerCase() === "html" ||
             rule.selector.toLowerCase() === "body";
           Object.entries(rule.style).forEach(([prop, val]) => {
-            if (rel.some((u) => val.toLowerCase().includes(u))) {
+            if (relUnits.some((u) => val.toLowerCase().includes(u))) {
               relCount++;
-              if (optSample.length < 5)
-                optSample.push(`${rule.selector} -> ${prop}: ${val}`);
+              if (optList.length < 5)
+                optList.push(`${rule.selector} -> ${prop}: ${val}`);
             }
-            if (fix.some((u) => new RegExp(`\\d${u}`, "i").test(val))) {
+            if (fixedUnits.some((u) => new RegExp(`\\d${u}`, "i").test(val))) {
               if (
                 !(
                   isSafeCtx ||
@@ -760,18 +694,25 @@
                   prop.startsWith("max-")
                 )
               ) {
-                fixCount++;
-                if (badSample.length < 10)
-                  badSample.push(`${rule.selector} -> ${prop}: ${val}`);
+                resList.push(`${rule.selector} -> ${prop}: ${val}`);
+                fixedCount++;
               }
             }
           });
         });
-        const ratio = fixCount / (relCount + fixCount || 1);
+        const ratio = fixedCount / (relCount + fixedCount || 1);
         return {
           feature: "RWD Unit Logic",
-          basic: `${ratio > 0.2 ? "Major" : ratio > 0.05 ? "Minor" : "Optimal"}: Bad Fixed: ${fixCount}`,
-          advanced: `<strong>Sample Optimal:</strong><ul class="audit-list">${optSample.map((i) => `<li>${i}</li>`).join("")}</ul><strong>Sample Issues:</strong><ul class="audit-list">${badSample.map((i) => `<li class="unit-major">${i}</li>`).join("")}</ul>`,
+          basic: `${ratio > 0.2 ? "Major" : ratio > 0.05 ? "Minor" : "Optimal"}: Bad Fixed: ${fixedCount}`,
+          advanced: `<strong>Optimal Sample:</strong><ul class="audit-list">${optList
+            .slice(0, 5)
+            .map((i) => `<li>${i}</li>`)
+            .join(
+              "",
+            )}</ul><strong>Restricted Issues:</strong><ul class="audit-list">${resList
+            .slice(0, 10)
+            .map((i) => `<li class="unit-major">${i}</li>`)
+            .join("")}</ul>`,
           score: ratio > 0.2 ? 2 : ratio > 0.05 ? 1 : 0,
           type: "advanced",
         };
@@ -781,11 +722,8 @@
         function getComp(path) {
           let c = { color: "#000000", "background-color": "#FFFFFF" };
           rules.forEach((r) => {
-            if (
-              path.includes(r.selector.toLowerCase()) ||
-              r.selector === "*" ||
-              r.selector === "body"
-            ) {
+            const sel = r.selector.toLowerCase();
+            if (path.includes(sel) || sel === "*" || sel === "body") {
               if (r.style.color) c.color = r.style.color;
               if (r.style["background-color"])
                 c["background-color"] = r.style["background-color"];
@@ -802,21 +740,21 @@
         ];
         const res = ctxs.map((ctx) => {
           const s = getComp(ctx.path);
-          const canvas = document.createElement("canvas");
-          const ctxCanvas = canvas.getContext("2d");
-          ctxCanvas.fillStyle = s.color;
-          const fgHex = ctxCanvas.fillStyle;
-          ctxCanvas.fillStyle = s["background-color"];
-          const bgHex = ctxCanvas.fillStyle;
-          const parse = (h) => ({
-            r: parseInt(h.substring(1, 3), 16),
-            g: parseInt(h.substring(3, 5), 16),
-            b: parseInt(h.substring(5, 7), 16),
-          });
-          const f = parse(fgHex),
-            b = parse(bgHex);
-          const lum = (c) => {
-            const a = [c.r, c.g, c.b].map((v) => {
+          const parse = (c) => {
+            const v = document.createElement("canvas").getContext("2d");
+            v.fillStyle = c;
+            const h = v.fillStyle;
+            return {
+              r: parseInt(h.substring(1, 3), 16),
+              g: parseInt(h.substring(3, 5), 16),
+              b: parseInt(h.substring(5, 7), 16),
+              hex: h.toUpperCase(),
+            };
+          };
+          const fg = parse(s.color);
+          const bg = parse(s["background-color"]);
+          const lum = (r, g, b) => {
+            const a = [r, g, b].map((v) => {
               v /= 255;
               return v <= 0.03928
                 ? v / 12.92
@@ -824,14 +762,15 @@
             });
             return a[0] * 0.2126 + a[1] * 0.7152 + a[2] * 0.0722;
           };
-          const ratio = (lum(f) + 0.05) / (lum(b) + 0.05);
-          const rVal = ratio < 1 ? 1 / ratio : ratio;
+          const r =
+            (Math.max(lum(fg.r, fg.g, fg.b), lum(bg.r, bg.g, bg.b)) + 0.05) /
+            (Math.min(lum(fg.r, fg.g, fg.b), lum(bg.r, bg.g, bg.b)) + 0.05);
           return {
             ...ctx,
-            fg: fgHex.toUpperCase(),
-            bg: bgHex.toUpperCase(),
-            ratio: rVal,
-            sev: rVal >= 7 ? "optimal" : rVal >= 4.5 ? "minor" : "major",
+            fg: fg.hex,
+            bg: bg.hex,
+            ratio: r,
+            sev: r >= 7 ? "optimal" : r >= 4.5 ? "minor" : "major",
           };
         });
         return {
@@ -850,30 +789,15 @@
         };
       }
 
-      async function startManualAnalysis(html, css) {
-        loader.style.display = "block";
-        output.innerHTML = `<tr><td colspan="3">BYPASS ACTIVE. Parsing local buffer...</td></tr>`;
-        try {
-          const parser = new DOMParser();
-          const doc = parser.parseFromString(html, "text/html");
-          const rules = parseCSSRules(css);
-          performDiagnosticCore(doc, html, css, rules, [], "Manual Patch");
-        } catch (err) {
-          output.innerHTML = `<tr><td colspan="3" class="status-major">CRITICAL FAILURE: ${err.message}</td></tr>`;
-        } finally {
-          loader.style.display = "none";
-        }
-      }
-
       async function startAnalysis(url) {
-        const adenda =
+        const randAdenda =
           SCAN_PHRASES[Math.floor(Math.random() * SCAN_PHRASES.length)];
         loader.style.display = "block";
-        output.innerHTML = `<tr><td colspan="3">SCANNING... v1.9.5 Deep Audit. ${adenda}</td></tr>`;
+        output.innerHTML = `<tr><td colspan="3">SCANNING... v1.9.2 Deep Audit. ${randAdenda}</td></tr>`;
         try {
-          const htmlStr = await fetchWithRetry(url);
+          const html = await fetchWithRetry(url);
           const parser = new DOMParser();
-          const doc = parser.parseFromString(htmlStr, "text/html");
+          const doc = parser.parseFromString(html, "text/html");
           const links = Array.from(
             doc.querySelectorAll('link[rel="stylesheet"]'),
           ).map((l) => ({
@@ -887,101 +811,81 @@
             } catch (e) {}
           }
           const rules = parseCSSRules(css);
-          performDiagnosticCore(
-            doc,
-            htmlStr,
-            css,
-            rules,
-            links,
-            url.split("/").pop(),
-          );
+          const results = [];
+          const fn = url.split("/").pop();
+          const hygiene = /^[a-z0-9._-]+$/i.test(fn);
+          const pretty = html.includes("\n  ") || html.includes("\n\t");
+          results.push({
+            feature: "File I/O",
+            basic: hygiene ? "Optimal Name" : "Major: Filename",
+            advanced: `Indentation: ${pretty ? "Optimal" : "Bad"}<br>Path: ${fn}`,
+            score: hygiene ? 0 : 2,
+            type: "basic",
+          });
+          const hasStyleTags = doc.querySelectorAll("style").length > 0;
+          results.push({
+            feature: "CSS Architecture",
+            basic: hasStyleTags
+              ? "Major: Internal styles"
+              : "Optimal: External",
+            advanced: `Linked: ${links.length} files<br>${links.map((l) => l.rel).join(", ")}`,
+            score: hasStyleTags ? 2 : 0,
+            type: "basic",
+          });
+          results.push(auditMetaInfo(doc));
+          const std = [
+            "header",
+            "nav",
+            "main",
+            "section",
+            "article",
+            "aside",
+            "footer",
+          ];
+          results.push({
+            feature: "HTML5 Landmarks",
+            basic:
+              std.filter((t) => doc.querySelector(t)).length >= 4
+                ? "Optimal"
+                : "Minor",
+            advanced: std
+              .map(
+                (t) =>
+                  `<span class="tag-pill ${doc.querySelector(t) ? "" : "tag-missing"}">${doc.querySelector(t) ? t.toUpperCase() : "<del>" + t.toUpperCase() + "</del>"}</span>`,
+              )
+              .join(" "),
+            score: std.filter((t) => doc.querySelector(t)).length >= 4 ? 0 : 1,
+            type: "basic",
+          });
+          results.push(auditCSSSelectors(doc, rules));
+          const tags = ["body", "h1", "h2", "h3", "p", "a", "ul"];
+          const rep = {};
+          tags.forEach((t) => {
+            let r = "Inherited";
+            rules.forEach((ru) => {
+              if (ru.selector.toLowerCase() === t && ru.style["font-size"])
+                r = ru.style["font-size"];
+            });
+            rep[t] = r;
+          });
+          results.push({
+            feature: "Typographic Scale",
+            basic: rep.p === "Inherited" ? "Minor" : "Optimal",
+            advanced: Object.entries(rep)
+              .map(([t, d]) => `<li>${t.toUpperCase()}: ${d}</li>`)
+              .join(""),
+            score: 0,
+            type: "basic",
+          });
+          results.push(auditContrast(rules));
+          results.push(auditRWDUnits(rules));
+          results.push(auditMastery(doc, css, rules));
+          renderResults(results);
         } catch (err) {
-          output.innerHTML = `<tr><td colspan="3" class="status-major">CRITICAL FAILURE: ${err.message}. Try "Manual Patch" mode if station signal is lost.</td></tr>`;
+          output.innerHTML = `<tr><td colspan="3" class="status-major">CRITICAL FAILURE: ${err.message}</td></tr>`;
         } finally {
           loader.style.display = "none";
         }
-      }
-
-      function performDiagnosticCore(
-        doc,
-        rawHTML,
-        rawCSS,
-        rules,
-        links,
-        filename,
-      ) {
-        const results = [];
-        const hygiene = /^[a-z0-9._-]+$/i.test(filename);
-        const pretty = rawHTML.includes("\n  ") || rawHTML.includes("\n\t");
-        results.push({
-          feature: "File I/O",
-          basic: hygiene ? "Optimal Name" : "Major: Filename",
-          advanced: `Indentation: ${pretty ? "Optimal" : "Bad"}<br>Target: ${filename}`,
-          score: hygiene ? 0 : 2,
-          type: "basic",
-        });
-        const styles = doc.querySelectorAll("style").length,
-          inline = doc.querySelectorAll("[style]").length;
-        results.push({
-          feature: "CSS Architecture",
-          basic:
-            styles || inline
-              ? "Major: Internal styles"
-              : "Optimal: External only",
-          advanced: `Linked: ${links.length} files<br>${links.map((l) => l.rel).join(", ")}`,
-          score: styles || inline ? 2 : 0,
-          type: "basic",
-        });
-        results.push(auditMetaInfo(doc));
-        const std = [
-          "header",
-          "nav",
-          "main",
-          "section",
-          "article",
-          "aside",
-          "footer",
-        ];
-        results.push({
-          feature: "HTML5 Landmarks",
-          basic:
-            std.filter((t) => doc.querySelector(t)).length >= 4
-              ? "Optimal"
-              : "Minor",
-          advanced: std
-            .map(
-              (t) =>
-                `<span class="tag-pill ${doc.querySelector(t) ? "" : "tag-missing"}">${doc.querySelector(t) ? t.toUpperCase() : "<del>" + t.toUpperCase() + "</del>"}</span>`,
-            )
-            .join(" "),
-          score: std.filter((t) => doc.querySelector(t)).length >= 4 ? 0 : 1,
-          type: "basic",
-        });
-        results.push(auditCSSSelectors(doc, rules));
-        results.push(auditIdentity(doc, rules));
-        const tags = ["body", "h1", "h2", "h3", "p", "a", "ul"];
-        const rep = {};
-        tags.forEach((t) => {
-          let r = "Inherited";
-          rules.forEach((ru) => {
-            if (ru.selector.toLowerCase() === t && ru.style["font-size"])
-              r = ru.style["font-size"];
-          });
-          rep[t] = r;
-        });
-        results.push({
-          feature: "Typographic Scale",
-          basic: rep.p === "Inherited" ? "Minor" : "Optimal",
-          advanced: Object.entries(rep)
-            .map(([t, d]) => `<li>${t.toUpperCase()}: ${d}</li>`)
-            .join(""),
-          score: 0,
-          type: "basic",
-        });
-        results.push(auditContrast(rules));
-        results.push(auditRWDUnits(rules));
-        results.push(auditMastery(doc, rawCSS));
-        renderResults(results);
       }
 
       function renderResults(results) {

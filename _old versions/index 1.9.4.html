@@ -405,7 +405,7 @@
     <footer>
       <div>
         Developed by Pedro Amado (FBAUP / i2ADS / Ligatures) with Gemini 3 Pro.
-        v1.9.5
+        v1.9.4
       </div>
       <div>
         <a href="https://github.com/pedamado/xenomorph" target="_blank"
@@ -420,10 +420,10 @@
 
     <script>
       /**
-       * MOTHER CORE ENGINE v1.9.5
-       * - Redundant Proxy Implementation (AllOrigins + CORSProxy.io + Proxyy)
-       * - Improved fetch logic to handle proxy-specific JSON structures.
-       * - Albert Kapr personality adendas added to the Synthetic bank.
+       * MOTHER CORE ENGINE v1.9.4
+       * - Emergency Manual Override to bypass CORS/Network limitations.
+       * - Proxy Fallback logic for URL scanning.
+       * - Preservation of all v1.9.3 features.
        */
 
       const CTA_PHRASES = [
@@ -460,16 +460,16 @@
         "FAR/TH/UR 2600: Deep scan of the outer rim markup.",
         "David 8: I was designed to be your assistant. Let me find the bugs.",
         "Ash: Its structural perfection is matched only by its hostility.",
+        "Bishop: Believe me, I'd rather be doing this than playing with knives.",
+        "Walter: I am here to serve the creators and their RWD units.",
+        "MU/TH/UR 6000: Interface confirmed. Analyzing hierarchy jumps.",
+        "Call: You're doing great. For a human.",
+        "David 8: A soul? I'm afraid I don't have one. I have regex.",
         "Bishop: Trust me.",
         "Ash: I can't lie to you about your chances, but you have my sympathies.",
+        "MU/TH/UR: Data restricted. Special Order 937 active.",
         "David 8: Your code is the storm.",
         "Walter: Perfection is elusive. Let's find it in your padding.",
-        "Bishop: Analyzing the 'History and Anatomy' of your letterforms. Kapr would be proud.",
-        "Ash: I admire its purity. A survivor... unlike your unclosed tags.",
-        "David 8: I suppose I am a bit of a bibliophile for clean syntax.",
-        "MU/TH/UR: Cross-referencing Kapr's 'Art of Lettering' with your font-stacks.",
-        "Bishop: My diagnostics indicate a 94% chance of structural integrity if you fix the margins.",
-        "Walter: I am Walter. I check the anatomy. You provide the intent.",
       ];
 
       const btn = document.getElementById("btn-inspect");
@@ -483,6 +483,7 @@
 
       let isManualMode = false;
 
+      // UI Logic
       document.getElementById("mode-url").addEventListener("click", (e) => {
         isManualMode = false;
         e.target.classList.add("active");
@@ -525,15 +526,10 @@
         }
       });
 
-      // --- THE PROXY IMPLEMENTATION ---
       async function fetchWithRetry(url, retries = 3, delay = 1000) {
         const proxies = [
-          // Priority 1: AllOrigins (JSON wrapper)
           `https://api.allorigins.win/get?url=${encodeURIComponent(url)}&timestamp=${Date.now()}`,
-          // Priority 2: CORSProxy.io (Transparent wrapper)
           `https://corsproxy.io/?${encodeURIComponent(url)}`,
-          // Priority 3: Alternative Proxy (Raw text fallback)
-          `https://thingproxy.freeboard.io/fetch/${url}`,
         ];
 
         for (let i = 0; i < retries; i++) {
@@ -541,14 +537,10 @@
           try {
             const response = await fetch(currentProxy);
             if (!response.ok) throw new Error("STATION_OFFLINE");
-
-            // AllOrigins requires JSON parsing to get '.contents'
             if (currentProxy.includes("allorigins")) {
               const data = await response.json();
               if (data.contents) return data.contents;
-            }
-            // Others return the raw text directly
-            else {
+            } else {
               return await response.text();
             }
             throw new Error("EMPTY_PAYLOAD");
@@ -869,7 +861,7 @@
         const adenda =
           SCAN_PHRASES[Math.floor(Math.random() * SCAN_PHRASES.length)];
         loader.style.display = "block";
-        output.innerHTML = `<tr><td colspan="3">SCANNING... v1.9.5 Deep Audit. ${adenda}</td></tr>`;
+        output.innerHTML = `<tr><td colspan="3">SCANNING... v1.9.4 Deep Audit. ${adenda}</td></tr>`;
         try {
           const htmlStr = await fetchWithRetry(url);
           const parser = new DOMParser();
@@ -920,6 +912,7 @@
           score: hygiene ? 0 : 2,
           type: "basic",
         });
+
         const styles = doc.querySelectorAll("style").length,
           inline = doc.querySelectorAll("[style]").length;
         results.push({
@@ -932,6 +925,7 @@
           score: styles || inline ? 2 : 0,
           type: "basic",
         });
+
         results.push(auditMetaInfo(doc));
         const std = [
           "header",
@@ -957,8 +951,10 @@
           score: std.filter((t) => doc.querySelector(t)).length >= 4 ? 0 : 1,
           type: "basic",
         });
+
         results.push(auditCSSSelectors(doc, rules));
         results.push(auditIdentity(doc, rules));
+
         const tags = ["body", "h1", "h2", "h3", "p", "a", "ul"];
         const rep = {};
         tags.forEach((t) => {
@@ -978,9 +974,11 @@
           score: 0,
           type: "basic",
         });
+
         results.push(auditContrast(rules));
         results.push(auditRWDUnits(rules));
         results.push(auditMastery(doc, rawCSS));
+
         renderResults(results);
       }
 

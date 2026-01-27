@@ -93,32 +93,11 @@
         margin-bottom: 4rem;
         max-width: 800px;
       }
-      .mode-toggle {
-        display: flex;
-        gap: 10px;
-        margin-bottom: 5px;
-      }
-      .mode-btn {
-        background: transparent;
-        border: 1px solid var(--muted-green);
-        color: var(--muted-green);
-        padding: 4px 12px;
-        font-size: 0.7rem;
-        cursor: pointer;
-        text-transform: uppercase;
-      }
-      .mode-btn.active {
-        border-color: var(--terminal-green);
-        color: var(--terminal-green);
-        background: rgba(74, 246, 38, 0.05);
-      }
-
       .input-row {
         display: flex;
         gap: 1rem;
       }
-      input[type="text"],
-      textarea {
+      input[type="text"] {
         flex-grow: 1;
         background: transparent;
         border: 1px solid var(--muted-green);
@@ -127,20 +106,8 @@
         font-family: inherit;
         font-size: var(--fs-base);
         outline: none;
-        transition: border-color 0.2s;
       }
-      textarea {
-        height: 150px;
-        font-size: 0.75rem;
-        margin-top: 10px;
-        display: none;
-      }
-      input[type="text"]:focus,
-      textarea:focus {
-        border-color: var(--terminal-green);
-      }
-
-      button#btn-inspect {
+      button {
         background-color: var(--terminal-green);
         color: var(--bg-color);
         border: none;
@@ -151,7 +118,7 @@
         cursor: pointer;
         transition: opacity 0.2s;
       }
-      button#btn-inspect:hover {
+      button:hover {
         opacity: 0.9;
       }
 
@@ -350,10 +317,7 @@
     </header>
 
     <div class="input-organism">
-      <div class="mode-toggle">
-        <button class="mode-btn active" id="mode-url">Signal Lock (URL)</button>
-        <button class="mode-btn" id="mode-manual">Manual Patch (Paste)</button>
-      </div>
+      <label for="target-url">INPUT TARGET URI:</label>
       <div class="input-row">
         <input
           type="text"
@@ -363,14 +327,6 @@
         />
         <button id="btn-inspect">INSPECT</button>
       </div>
-      <textarea
-        id="manual-html"
-        placeholder="Paste your raw HTML here..."
-      ></textarea>
-      <textarea
-        id="manual-css"
-        placeholder="Paste your raw CSS here... (Optional)"
-      ></textarea>
     </div>
 
     <div id="summary-area">
@@ -405,7 +361,7 @@
     <footer>
       <div>
         Developed by Pedro Amado (FBAUP / i2ADS / Ligatures) with Gemini 3 Pro.
-        v1.9.5
+        v1.9.3
       </div>
       <div>
         <a href="https://github.com/pedamado/xenomorph" target="_blank"
@@ -420,10 +376,10 @@
 
     <script>
       /**
-       * MOTHER CORE ENGINE v1.9.5
-       * - Redundant Proxy Implementation (AllOrigins + CORSProxy.io + Proxyy)
-       * - Improved fetch logic to handle proxy-specific JSON structures.
-       * - Albert Kapr personality adendas added to the Synthetic bank.
+       * MOTHER CORE ENGINE v1.9.3
+       * - Completed pedagogical checklist (File I/O, Meta, Identity, Box Model, Mastery)
+       * - v1.9.2 fix preserved (Exclude meta from Selectors ratio)
+       * - Randomized Alien Personality adendas and placeholder.
        */
 
       const CTA_PHRASES = [
@@ -460,16 +416,16 @@
         "FAR/TH/UR 2600: Deep scan of the outer rim markup.",
         "David 8: I was designed to be your assistant. Let me find the bugs.",
         "Ash: Its structural perfection is matched only by its hostility.",
+        "Bishop: Believe me, I'd rather be doing this than playing with knives.",
+        "Walter: I am here to serve the creators and their RWD units.",
+        "MU/TH/UR 6000: Interface confirmed. Analyzing hierarchy jumps.",
+        "Call: You're doing great. For a human.",
+        "David 8: A soul? I'm afraid I don't have one. I have regex.",
         "Bishop: Trust me.",
         "Ash: I can't lie to you about your chances, but you have my sympathies.",
+        "MU/TH/UR: Data restricted. Special Order 937 active.",
         "David 8: Your code is the storm.",
         "Walter: Perfection is elusive. Let's find it in your padding.",
-        "Bishop: Analyzing the 'History and Anatomy' of your letterforms. Kapr would be proud.",
-        "Ash: I admire its purity. A survivor... unlike your unclosed tags.",
-        "David 8: I suppose I am a bit of a bibliophile for clean syntax.",
-        "MU/TH/UR: Cross-referencing Kapr's 'Art of Lettering' with your font-stacks.",
-        "Bishop: My diagnostics indicate a 94% chance of structural integrity if you fix the margins.",
-        "Walter: I am Walter. I check the anatomy. You provide the intent.",
       ];
 
       const btn = document.getElementById("btn-inspect");
@@ -477,29 +433,6 @@
       const output = document.getElementById("report-output");
       const summary = document.getElementById("summary-area");
       const ctaPlaceholder = document.getElementById("placeholder-cta");
-      const manualHtml = document.getElementById("manual-html");
-      const manualCss = document.getElementById("manual-css");
-      const targetUrlInput = document.getElementById("target-url");
-
-      let isManualMode = false;
-
-      document.getElementById("mode-url").addEventListener("click", (e) => {
-        isManualMode = false;
-        e.target.classList.add("active");
-        document.getElementById("mode-manual").classList.remove("active");
-        targetUrlInput.style.display = "block";
-        manualHtml.style.display = "none";
-        manualCss.style.display = "none";
-      });
-
-      document.getElementById("mode-manual").addEventListener("click", (e) => {
-        isManualMode = true;
-        e.target.classList.add("active");
-        document.getElementById("mode-url").classList.remove("active");
-        targetUrlInput.style.display = "none";
-        manualHtml.style.display = "block";
-        manualCss.style.display = "block";
-      });
 
       window.onload = () => {
         ctaPlaceholder.innerText =
@@ -507,50 +440,24 @@
       };
 
       btn.addEventListener("click", () => {
-        if (isManualMode) {
-          const html = manualHtml.value.trim();
-          const css = manualCss.value.trim();
-          if (!html) return;
-          ctaPlaceholder.style.display = "none";
-          startManualAnalysis(html, css);
-        } else {
-          let url = targetUrlInput.value.trim();
-          if (!url) return;
-          if (url.endsWith("/")) url += "index.html";
-          else if (!url.includes(".") && !url.includes(".html"))
-            url = url.replace(/\/?$/, "/index.html");
-          targetUrlInput.value = url;
-          ctaPlaceholder.style.display = "none";
-          startAnalysis(url);
-        }
+        let url = document.getElementById("target-url").value.trim();
+        if (!url) return;
+        if (url.endsWith("/")) url += "index.html";
+        else if (!url.includes(".") && !url.includes(".html"))
+          url = url.replace(/\/?$/, "/index.html");
+        document.getElementById("target-url").value = url;
+        ctaPlaceholder.style.display = "none";
+        startAnalysis(url);
       });
 
-      // --- THE PROXY IMPLEMENTATION ---
       async function fetchWithRetry(url, retries = 3, delay = 1000) {
-        const proxies = [
-          // Priority 1: AllOrigins (JSON wrapper)
-          `https://api.allorigins.win/get?url=${encodeURIComponent(url)}&timestamp=${Date.now()}`,
-          // Priority 2: CORSProxy.io (Transparent wrapper)
-          `https://corsproxy.io/?${encodeURIComponent(url)}`,
-          // Priority 3: Alternative Proxy (Raw text fallback)
-          `https://thingproxy.freeboard.io/fetch/${url}`,
-        ];
-
+        const proxy = `https://api.allorigins.win/get?url=${encodeURIComponent(url)}&timestamp=${Date.now()}`;
         for (let i = 0; i < retries; i++) {
-          const currentProxy = proxies[i % proxies.length];
           try {
-            const response = await fetch(currentProxy);
-            if (!response.ok) throw new Error("STATION_OFFLINE");
-
-            // AllOrigins requires JSON parsing to get '.contents'
-            if (currentProxy.includes("allorigins")) {
-              const data = await response.json();
-              if (data.contents) return data.contents;
-            }
-            // Others return the raw text directly
-            else {
-              return await response.text();
-            }
+            const response = await fetch(proxy);
+            if (!response.ok) throw new Error("NETWORK_UNSTABLE");
+            const data = await response.json();
+            if (data.contents) return data.contents;
             throw new Error("EMPTY_PAYLOAD");
           } catch (err) {
             if (i === retries - 1) throw err;
@@ -603,6 +510,7 @@
         return rules;
       }
 
+      // --- MODULE: Meta Info ---
       function auditMetaInfo(doc) {
         const checks = [
           {
@@ -631,6 +539,7 @@
         };
       }
 
+      // --- MODULE: CSS Selectors ---
       function auditCSSSelectors(doc, rules) {
         const hasUniversal = rules.some((r) => r.selector.trim() === "*");
         const landmarks = [
@@ -679,6 +588,7 @@
         };
       }
 
+      // --- MODULE: Identity & Box Model ---
       function auditIdentity(doc, rules) {
         const allIds = Array.from(doc.querySelectorAll("[id]")).map((el) => ({
           tag: el.tagName.toLowerCase(),
@@ -686,36 +596,49 @@
         }));
         const redundant = allIds.filter((item) => item.tag === item.id);
         const hasTopId = !!doc.querySelector("body[id], header[id], #top");
-        let posCount = 0;
+
+        let posCount = 0,
+          totalRules = rules.length;
         rules.forEach((r) => {
           if (r.style.position === "absolute" || r.style.position === "fixed")
             posCount++;
         });
-        const posRatio = posCount / (rules.length || 1);
+        const posRatio = posCount / (totalRules || 1);
+
         return {
           feature: "Identity & Box Model",
           basic:
             redundant.length === 0 && hasTopId
               ? "Optimal Identity"
               : "Minor: Redundancy found",
-          advanced: `Top ID: ${hasTopId ? "Found" : "Missing"}<br>Redundant IDs: ${redundant.length}<br>Positioning: ${posCount} absolute/fixed (${Math.round(posRatio * 100)}%)`,
+          advanced: `<strong>Identity:</strong> ${hasTopId ? "Top ID found" : "Missing Top ID"}<br>Redundant IDs: ${redundant.length}<br><strong>Positioning:</strong> ${posCount} absolute/fixed (${Math.round(posRatio * 100)}%)`,
           score: posRatio > 0.2 || redundant.length > 0 ? 1 : 0,
           type: "advanced",
         };
       }
 
-      function auditMastery(doc, rawCSS) {
+      // --- MODULE: Exploration & Mastery (Full Checklist) ---
+      function auditMastery(doc, rawCSS, rules) {
         const checks = [
           { pattern: /@font-face/i, label: "Webfonts (@font-face)" },
           { pattern: /--[a-zA-Z0-9-]+:/i, label: "CSS Variables" },
           { pattern: /:hover/i, label: "Pseudo: :hover" },
+          { pattern: /:active/i, label: "Pseudo: :active" },
+          { pattern: /:visited/i, label: "Pseudo: :visited" },
           { pattern: /:focus/i, label: "Pseudo: :focus" },
+          { pattern: /:nth-child/i, label: "Pseudo: :nth-child()" },
+          { pattern: /::before|::after/i, label: "Pseudo-elements" },
           { pattern: /display:\s*grid/i, label: "CSS Grid" },
           { pattern: /display:\s*flex/i, label: "Flexbox" },
           { pattern: /clamp\(/i, label: "Clamp() Scaling" },
+          { pattern: /calc\(/i, label: "Calc() Functions" },
           { tag: "strong", label: "Semantic: strong" },
           { tag: "em", label: "Semantic: em" },
+          { tag: "blockquote", label: "Semantic: blockquote" },
+          { tag: "abbr", label: "Semantic: abbr" },
           { tag: "time", label: "Semantic: time" },
+          { tag: "br", label: "Tag: br" },
+          { tag: "hr", label: "Tag: hr" },
           { pattern: /&copy;|&#169;/i, label: "Entity: &copy;" },
         ];
         const found = [];
@@ -725,6 +648,29 @@
           if (p) found.push(c.label);
           else missing.push(c.label);
         });
+
+        const anchors = Array.from(doc.querySelectorAll("a[href]"));
+        const aTypes = {
+          rel: anchors.some(
+            (a) =>
+              !a.getAttribute("href").startsWith("http") &&
+              !a.getAttribute("href").startsWith("mailto"),
+          ),
+          abs: anchors.some((a) => a.getAttribute("href").startsWith("http")),
+          mail: anchors.some((a) =>
+            a.getAttribute("href").startsWith("mailto"),
+          ),
+        };
+        const labels = {
+          rel: "Relative Links",
+          abs: "Absolute Links",
+          mail: "Email Links",
+        };
+        Object.keys(aTypes).forEach((k) => {
+          if (aTypes[k]) found.push(labels[k]);
+          else missing.push(labels[k]);
+        });
+
         return {
           feature: "Exploration & Mastery",
           basic: `Found: ${found.length} | Missing: ${missing.length}`,
@@ -734,6 +680,7 @@
         };
       }
 
+      // --- RWD Rebuilt ---
       function auditRWDUnits(rules) {
         const rel = ["rem", "em", "%", "vw", "vh", "dvh", "clamp", "calc"];
         const fix = ["px", "pt", "cm", "mm", "in", "pc"];
@@ -799,24 +746,25 @@
           { name: "Main a", path: "main a" },
           { name: "List a", path: "ul a" },
           { name: "Main P", path: "main p" },
+          { name: "Main H1", path: "main h1" },
         ];
         const res = ctxs.map((ctx) => {
           const s = getComp(ctx.path);
-          const canvas = document.createElement("canvas");
-          const ctxCanvas = canvas.getContext("2d");
-          ctxCanvas.fillStyle = s.color;
-          const fgHex = ctxCanvas.fillStyle;
-          ctxCanvas.fillStyle = s["background-color"];
-          const bgHex = ctxCanvas.fillStyle;
-          const parse = (h) => ({
-            r: parseInt(h.substring(1, 3), 16),
-            g: parseInt(h.substring(3, 5), 16),
-            b: parseInt(h.substring(5, 7), 16),
-          });
-          const f = parse(fgHex),
-            b = parse(bgHex);
-          const lum = (c) => {
-            const a = [c.r, c.g, c.b].map((v) => {
+          const parse = (c) => {
+            const v = document.createElement("canvas").getContext("2d");
+            v.fillStyle = c;
+            const h = v.fillStyle;
+            return {
+              r: parseInt(h.substring(1, 3), 16),
+              g: parseInt(h.substring(3, 5), 16),
+              b: parseInt(h.substring(5, 7), 16),
+              hex: h.toUpperCase(),
+            };
+          };
+          const fg = parse(s.color);
+          const bg = parse(s["background-color"]);
+          const lum = (r, g, b) => {
+            const a = [r, g, b].map((v) => {
               v /= 255;
               return v <= 0.03928
                 ? v / 12.92
@@ -824,14 +772,15 @@
             });
             return a[0] * 0.2126 + a[1] * 0.7152 + a[2] * 0.0722;
           };
-          const ratio = (lum(f) + 0.05) / (lum(b) + 0.05);
-          const rVal = ratio < 1 ? 1 / ratio : ratio;
+          const r =
+            (Math.max(lum(fg.r, fg.g, fg.b), lum(bg.r, bg.g, bg.b)) + 0.05) /
+            (Math.min(lum(fg.r, fg.g, fg.b), lum(bg.r, bg.g, bg.b)) + 0.05);
           return {
             ...ctx,
-            fg: fgHex.toUpperCase(),
-            bg: bgHex.toUpperCase(),
-            ratio: rVal,
-            sev: rVal >= 7 ? "optimal" : rVal >= 4.5 ? "minor" : "major",
+            fg: fg.hex,
+            bg: bg.hex,
+            ratio: r,
+            sev: r >= 7 ? "optimal" : r >= 4.5 ? "minor" : "major",
           };
         });
         return {
@@ -850,26 +799,11 @@
         };
       }
 
-      async function startManualAnalysis(html, css) {
-        loader.style.display = "block";
-        output.innerHTML = `<tr><td colspan="3">BYPASS ACTIVE. Parsing local buffer...</td></tr>`;
-        try {
-          const parser = new DOMParser();
-          const doc = parser.parseFromString(html, "text/html");
-          const rules = parseCSSRules(css);
-          performDiagnosticCore(doc, html, css, rules, [], "Manual Patch");
-        } catch (err) {
-          output.innerHTML = `<tr><td colspan="3" class="status-major">CRITICAL FAILURE: ${err.message}</td></tr>`;
-        } finally {
-          loader.style.display = "none";
-        }
-      }
-
       async function startAnalysis(url) {
         const adenda =
           SCAN_PHRASES[Math.floor(Math.random() * SCAN_PHRASES.length)];
         loader.style.display = "block";
-        output.innerHTML = `<tr><td colspan="3">SCANNING... v1.9.5 Deep Audit. ${adenda}</td></tr>`;
+        output.innerHTML = `<tr><td colspan="3">SCANNING... v1.9.3 Deep Audit. ${adenda}</td></tr>`;
         try {
           const htmlStr = await fetchWithRetry(url);
           const parser = new DOMParser();
@@ -887,101 +821,95 @@
             } catch (e) {}
           }
           const rules = parseCSSRules(css);
-          performDiagnosticCore(
-            doc,
-            htmlStr,
-            css,
-            rules,
-            links,
-            url.split("/").pop(),
-          );
+          const results = [];
+
+          // 1. File I/O
+          const fn = url.split("/").pop();
+          const hygiene = /^[a-z0-9._-]+$/i.test(fn);
+          const pretty = htmlStr.includes("\n  ") || htmlStr.includes("\n\t");
+          results.push({
+            feature: "File I/O",
+            basic: hygiene ? "Optimal Name" : "Major: Filename",
+            advanced: `Indentation: ${pretty ? "Optimal" : "Bad"}<br>Target: ${fn}`,
+            score: hygiene ? 0 : 2,
+            type: "basic",
+          });
+
+          // 2. CSS Architecture
+          const styles = doc.querySelectorAll("style").length,
+            inline = doc.querySelectorAll("[style]").length;
+          results.push({
+            feature: "CSS Architecture",
+            basic:
+              styles || inline
+                ? "Major: Internal styles"
+                : "Optimal: External only",
+            advanced: `Linked: ${links.length} files<br>${links.map((l) => l.rel).join(", ")}`,
+            score: styles || inline ? 2 : 0,
+            type: "basic",
+          });
+
+          // 3. Meta & Identity & Hierarchy
+          results.push(auditMetaInfo(doc));
+          const std = [
+            "header",
+            "nav",
+            "main",
+            "section",
+            "article",
+            "aside",
+            "footer",
+          ];
+          results.push({
+            feature: "HTML5 Landmarks",
+            basic:
+              std.filter((t) => doc.querySelector(t)).length >= 4
+                ? "Optimal"
+                : "Minor",
+            advanced: std
+              .map(
+                (t) =>
+                  `<span class="tag-pill ${doc.querySelector(t) ? "" : "tag-missing"}">${doc.querySelector(t) ? t.toUpperCase() : "<del>" + t.toUpperCase() + "</del>"}</span>`,
+              )
+              .join(" "),
+            score: std.filter((t) => doc.querySelector(t)).length >= 4 ? 0 : 1,
+            type: "basic",
+          });
+
+          results.push(auditCSSSelectors(doc, rules));
+          results.push(auditIdentity(doc, rules));
+
+          // 4. Design Audits
+          const tags = ["body", "h1", "h2", "h3", "p", "a", "ul"];
+          const rep = {};
+          tags.forEach((t) => {
+            let r = "Inherited";
+            rules.forEach((ru) => {
+              if (ru.selector.toLowerCase() === t && ru.style["font-size"])
+                r = ru.style["font-size"];
+            });
+            rep[t] = r;
+          });
+          results.push({
+            feature: "Typographic Scale",
+            basic: rep.p === "Inherited" ? "Minor" : "Optimal",
+            advanced: Object.entries(rep)
+              .map(([t, d]) => `<li>${t.toUpperCase()}: ${d}</li>`)
+              .join(""),
+            score: 0,
+            type: "basic",
+          });
+
+          results.push(auditContrast(rules));
+          results.push(auditRWDUnits(rules));
+          results.push(auditMastery(doc, css, rules));
+
+          renderResults(results);
         } catch (err) {
-          output.innerHTML = `<tr><td colspan="3" class="status-major">CRITICAL FAILURE: ${err.message}. Try "Manual Patch" mode if station signal is lost.</td></tr>`;
+          output.innerHTML = `<tr><td colspan="3" class="status-major">CRITICAL FAILURE: ${err.message}</td></tr>`;
         } finally {
           loader.style.display = "none";
         }
-      }
-
-      function performDiagnosticCore(
-        doc,
-        rawHTML,
-        rawCSS,
-        rules,
-        links,
-        filename,
-      ) {
-        const results = [];
-        const hygiene = /^[a-z0-9._-]+$/i.test(filename);
-        const pretty = rawHTML.includes("\n  ") || rawHTML.includes("\n\t");
-        results.push({
-          feature: "File I/O",
-          basic: hygiene ? "Optimal Name" : "Major: Filename",
-          advanced: `Indentation: ${pretty ? "Optimal" : "Bad"}<br>Target: ${filename}`,
-          score: hygiene ? 0 : 2,
-          type: "basic",
-        });
-        const styles = doc.querySelectorAll("style").length,
-          inline = doc.querySelectorAll("[style]").length;
-        results.push({
-          feature: "CSS Architecture",
-          basic:
-            styles || inline
-              ? "Major: Internal styles"
-              : "Optimal: External only",
-          advanced: `Linked: ${links.length} files<br>${links.map((l) => l.rel).join(", ")}`,
-          score: styles || inline ? 2 : 0,
-          type: "basic",
-        });
-        results.push(auditMetaInfo(doc));
-        const std = [
-          "header",
-          "nav",
-          "main",
-          "section",
-          "article",
-          "aside",
-          "footer",
-        ];
-        results.push({
-          feature: "HTML5 Landmarks",
-          basic:
-            std.filter((t) => doc.querySelector(t)).length >= 4
-              ? "Optimal"
-              : "Minor",
-          advanced: std
-            .map(
-              (t) =>
-                `<span class="tag-pill ${doc.querySelector(t) ? "" : "tag-missing"}">${doc.querySelector(t) ? t.toUpperCase() : "<del>" + t.toUpperCase() + "</del>"}</span>`,
-            )
-            .join(" "),
-          score: std.filter((t) => doc.querySelector(t)).length >= 4 ? 0 : 1,
-          type: "basic",
-        });
-        results.push(auditCSSSelectors(doc, rules));
-        results.push(auditIdentity(doc, rules));
-        const tags = ["body", "h1", "h2", "h3", "p", "a", "ul"];
-        const rep = {};
-        tags.forEach((t) => {
-          let r = "Inherited";
-          rules.forEach((ru) => {
-            if (ru.selector.toLowerCase() === t && ru.style["font-size"])
-              r = ru.style["font-size"];
-          });
-          rep[t] = r;
-        });
-        results.push({
-          feature: "Typographic Scale",
-          basic: rep.p === "Inherited" ? "Minor" : "Optimal",
-          advanced: Object.entries(rep)
-            .map(([t, d]) => `<li>${t.toUpperCase()}: ${d}</li>`)
-            .join(""),
-          score: 0,
-          type: "basic",
-        });
-        results.push(auditContrast(rules));
-        results.push(auditRWDUnits(rules));
-        results.push(auditMastery(doc, rawCSS));
-        renderResults(results);
       }
 
       function renderResults(results) {
