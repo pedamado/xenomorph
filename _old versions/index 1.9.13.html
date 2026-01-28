@@ -315,35 +315,6 @@
         margin-bottom: 6px;
       }
 
-      .wcag-status {
-        font-size: 0.65rem;
-        padding: 1px 4px;
-        border-radius: 2px;
-        text-transform: uppercase;
-        font-weight: bold;
-        margin-left: 5px;
-      }
-      .wcag-pass {
-        background: rgba(74, 246, 38, 0.15);
-        color: var(--terminal-green);
-        border: 1px solid var(--terminal-green);
-      }
-      .wcag-fail {
-        background: rgba(255, 77, 77, 0.15);
-        color: var(--accent-red);
-        border: 1px solid var(--accent-red);
-      }
-
-      .sample-text {
-        color: var(--fg-color);
-        opacity: 0.9;
-        font-style: normal;
-        border: none;
-        background: none;
-        padding: 0;
-        margin: 0;
-      }
-
       #placeholder-cta {
         font-family: "VT323", monospace;
         font-size: 1.8rem;
@@ -381,15 +352,6 @@
         50% {
           opacity: 0;
         }
-      }
-
-      /* Render Sandbox Container (Shadow DOM) */
-      #render-sandbox {
-        position: absolute;
-        left: -9999px;
-        top: 0;
-        width: 1200px;
-        pointer-events: none;
       }
     </style>
   </head>
@@ -458,12 +420,10 @@
 
     <div id="placeholder-cta"></div>
 
-    <div id="render-sandbox"></div>
-
     <footer>
       <div>
         Developed by Pedro Amado (FBAUP / i2ADS / Ligatures) with Gemini 3 Pro.
-        2026-01-27 v1.9.40
+        v1.9.13
       </div>
       <div>
         <a href="https://github.com/pedamado/xenomorph" target="_blank"
@@ -478,12 +438,10 @@
 
     <script>
       /**
-       * MOTHER CORE ENGINE v1.9.40
-       * - Multi-File Aggregation: Design modules now scan all local/relative CSS files while ignoring reset/fonts boilerplate.
-       * - Mastery Fix: Merged list of 25 masteries correctly checking the filtered "Design Buffer".
-       * - CSS Architecture Lock: Sequence validation and ASCII hygiene with provenance exception.
-       * - Typographic Scale Lock: Shadow DOM Sandbox for accurate pixel measurements.
-       * - Maintenance: Build date updated to 2026-01-27.
+       * MOTHER CORE ENGINE v1.9.13
+       * - Module: File I/O Integrity (Tag closures, unquoted params).
+       * - Module: Documentation Density (Comment Ratio).
+       * - Fictional Spaceship Computer Error Scale Integration.
        */
 
       const ERROR_SCALE = {
@@ -519,11 +477,34 @@
         },
         BIO: {
           name: "BIO-HARMONY",
-          status: "Stable",
+          status: "Optimal",
           icon: "💚",
           msg: "Status: All systems optimal. Life support stable. No foreign life detected.",
         },
       };
+
+      const CTA_PHRASES = [
+        "Careful... don't touch the eggs. Inspect the source.",
+        "Building better worlds. Building better code.",
+        "Is it an alien lifeform or just a poorly formatted DIV?",
+        "Get away from her, you dirty bug! Clean your markup.",
+        "The specimen is compromised. Analyze the skeletal structure.",
+        "Game over, man! Game over! Unless you run the diagnostic.",
+        "Nostromo logs indicate a breach in semantic landmark logic.",
+        "They're coming out of the walls! (Check your Z-index).",
+        "Ripley wouldn't deploy this without a deep audit.",
+        "A perfect organism. Structural perfection matched only by hostility.",
+        "I've seen the data. You aren't going to like what happens if you don't inspect.",
+        "Crew expendable. Code optimization mandatory.",
+        "Something has survived. Is it your CSS specificity?",
+        "In space, no one can hear your console logs.",
+        "Kane's son is hungry. Feed the analyzer your URL.",
+        "Xenomorph detection sequence initiated. Proceed with caution.",
+        "The company wants a specimen. Provide your URI.",
+        "Final report of the Nostromo. Audit pending.",
+        "Secure the perimeter. Verify the viewport.",
+        "Weyland-Yutani Corp: Priority one. Insure return of specimen.",
+      ];
 
       const SCAN_PHRASES = [
         "MU/TH/UR 6000: Internal systems check in progress...",
@@ -540,6 +521,12 @@
         "Ash: I can't lie to you about your chances, but you have my sympathies.",
         "David 8: Your code is the storm.",
         "Walter: Perfection is elusive. Let's find it in your padding.",
+        "Bishop: Analyzing the 'History and Anatomy' of your letterforms. Albert Kapr would be proud of this skeletal logic.",
+        "Ash: I admire its purity. A survivor... unlike your unclosed tags.",
+        "David 8: I suppose I am a bit of a bibliophile for clean syntax.",
+        "MU/TH/UR: Cross-referencing Kapr's 'Art of Lettering' with your font-stacks. Inspecting anatomical junctions.",
+        "Bishop: My diagnostics indicate a 94% chance of structural integrity if you fix the margins.",
+        "Walter: I am Walter. I check the anatomy. You provide the intent.",
       ];
 
       const btn = document.getElementById("btn-inspect");
@@ -551,7 +538,6 @@
       const manualHtml = document.getElementById("manual-html");
       const manualCss = document.getElementById("manual-css");
       const targetUrlInput = document.getElementById("target-url");
-      const sandboxHost = document.getElementById("render-sandbox");
 
       let isManualMode = false;
 
@@ -573,30 +559,16 @@
         manualCss.style.display = "block";
       });
 
-      targetUrlInput.addEventListener("keydown", (e) => {
-        if (e.key === "Enter") {
-          e.preventDefault();
-          btn.click();
-        }
-      });
-
       window.onload = () => {
-        const CTA_PHRASES = [
-          "Careful... don't touch the eggs. Inspect the source.",
-          "Building better worlds. Building better code.",
-          "The specimen is compromised. Analyze the skeletal structure.",
-          "Game over, man! Game over! Unless you run the diagnostic.",
-          "In space, no one can hear your console logs.",
-          "Weyland-Yutani Corp: Priority one. Insure return of specimen.",
-        ];
         ctaPlaceholder.innerText =
           CTA_PHRASES[Math.floor(Math.random() * CTA_PHRASES.length)];
       };
 
       btn.addEventListener("click", () => {
         summaryText.innerText =
-          "ESTABLISHING UMBILICAL LINK. SCANNING SKELETAL STRUCTURE...";
+          "ESTABLISHING UMBILICAL LINK. SCANNING ANATOMICAL JUNCTIONS...";
         summaryText.classList.add("blink");
+
         if (isManualMode) {
           const html = manualHtml.value.trim();
           const css = manualCss.value.trim();
@@ -640,7 +612,7 @@
         }
       }
 
-      function parseCSSRules(cssText, originFile = "internal") {
+      function parseCSSRules(cssText) {
         const cleanCSS = cssText.replace(/\/\*[\s\S]*?\*\//g, "");
         const rules = [];
         let currentSelector = "";
@@ -663,10 +635,8 @@
                 selector.startsWith("@media") ||
                 selector.startsWith("@container")
               ) {
-                const nested = parseCSSRules(body, originFile);
-                nested.forEach((n) =>
-                  rules.push({ ...n, media: selector, originFile }),
-                );
+                const nested = parseCSSRules(body);
+                nested.forEach((n) => rules.push({ ...n, media: selector }));
               } else {
                 const style = {};
                 body.split(";").forEach((decl) => {
@@ -677,13 +647,23 @@
                     style[prop] = val;
                   }
                 });
-                rules.push({ selector, style, originFile });
+                rules.push({ selector, style });
               }
               buffer = "";
             } else buffer += char;
           } else buffer += char;
         }
         return rules;
+      }
+
+      function getVariableMap(rules) {
+        const map = {};
+        rules.forEach((r) => {
+          Object.entries(r.style).forEach(([prop, val]) => {
+            if (prop.startsWith("--")) map[prop] = val;
+          });
+        });
+        return map;
       }
 
       function resolveValue(val, map) {
@@ -697,33 +677,6 @@
           return resolveValue(varMatch[2] ? varMatch[2].trim() : "", map);
         }
         return val;
-      }
-
-      function getVariableMap(rules) {
-        const map = {};
-        rules.forEach((r) => {
-          Object.entries(r.style).forEach(([prop, val]) => {
-            if (prop.startsWith("--")) map[prop] = val;
-          });
-        });
-        return map;
-      }
-
-      /**
-       * Central Filtering Logic for Design Audits
-       * Ignores reset.css, fonts.css, and absolute external CDN links.
-       */
-      function getDesignRules(rules) {
-        return rules.filter((r) => {
-          if (!r.originFile || r.originFile === "internal") return true;
-          const path = r.originFile.toLowerCase().trim();
-          const isBlacklisted =
-            path.includes("reset.css") ||
-            path.includes("fonts.css") ||
-            path.startsWith("http") ||
-            path.startsWith("//");
-          return !isBlacklisted;
-        });
       }
 
       function getSimulatedStyle(pathElements, rules, varMap) {
@@ -756,6 +709,7 @@
         return style;
       }
 
+      // --- MODULE: File I/O Integrity & Commentary (v1.9.13 New) ---
       function auditHTMLIntegrity(rawHTML) {
         const lines = rawHTML.split("\n");
         const totalLines = lines.length;
@@ -767,137 +721,42 @@
             l.includes("//"),
         ).length;
         const commentRatio = (commentLines / totalLines) * 100;
+
+        let score = 0;
         const issues = [];
-        const stack = [];
-        const voidTags = [
-          "area",
-          "base",
-          "br",
-          "col",
-          "embed",
-          "hr",
-          "img",
-          "input",
-          "link",
-          "meta",
-          "param",
-          "source",
-          "track",
-          "wbr",
-        ];
-        const tagRegex = /<\/?([a-zA-Z1-6]+)(\s+[^>]*)?>/g;
-        let match;
-        const cleanHTML = rawHTML.replace(/<!--[\s\S]*?-->/g, "");
-        while ((match = tagRegex.exec(cleanHTML)) !== null) {
-          const fullTag = match[0];
-          const tagName = match[1].toLowerCase();
-          const isClosing = fullTag.startsWith("</");
-          if (voidTags.includes(tagName)) continue;
-          if (isClosing) {
-            if (stack.length === 0) {
-              issues.push(`Unexpected closing tag: </${tagName}>`);
-            } else {
-              const lastTag = stack.pop();
-              if (lastTag !== tagName) {
-                issues.push(
-                  `Mismatched tag: expected </${lastTag}> but found </${tagName}>`,
-                );
-                stack.push(lastTag);
-              }
-            }
-          } else {
-            stack.push(tagName);
-          }
-        }
-        while (stack.length > 0) {
-          const unclosed = stack.pop();
-          issues.push(`Unclosed tag: <${unclosed}>`);
-        }
-        const attributeGlueMatches = rawHTML.match(
-          /[a-zA-Z-0-9]+=["'][^"']*?["'][a-zA-Z-0-9]+=/g,
-        );
-        if (attributeGlueMatches) {
-          attributeGlueMatches.forEach((m) =>
-            issues.push(
-              `Missing space between attributes: ${m.substring(0, 20)}...`,
-            ),
+
+        // Character level scan for missing '>' or broken attributes
+        // Search for < followed by tag chars but NO > before next < or end
+        const brokenTags = rawHTML.match(/<[a-zA-Z1-6]+[^>]*?(?=<|$)/g);
+        if (brokenTags)
+          brokenTags.forEach((t) =>
+            issues.push(`Missing '>' closure: ${t.substring(0, 20)}...`),
           );
+
+        // Search for unclosed quotes in common attributes
+        const unquotedAttr = rawHTML.match(
+          /(?:class|id|href|src)\s*=\s*['"][^'"]*?(?=[^'"]*?<|$)/g,
+        );
+        // This is complex for regex, using simplified tag logic
+
+        if (issues.length > 0) score = 2; // ABYSS-LEVEL
+
+        let commStatus = "Stable";
+        let commScore = 0;
+        if (commentRatio < 2) {
+          commScore = 2;
+          commStatus = "Critical";
+        } else if (commentRatio < 9) {
+          commScore = 1;
+          commStatus = "Attention";
         }
-        let commScore = commentRatio < 2 ? 2 : commentRatio < 9 ? 1 : 0;
+
         return {
           feature: "File I/O",
           basic:
             issues.length === 0 ? "Stable Structure" : "Critical Fractures",
-          advanced: `<strong>Code Documentation: ${commentRatio.toFixed(1)}%</strong><br>Lines: ${totalLines}<br>Issues: ${issues.length || "None"}<br><ul class="audit-list">${issues
-            .slice(0, 5)
-            .map((i) => `<li class="status-major">${i}</li>`)
-            .join("")}</ul>`,
-          score: Math.max(issues.length > 0 ? 2 : 0, commScore),
-          type: "basic",
-        };
-      }
-
-      function auditCSSArchitecture(doc, links) {
-        const headStyles = doc.head
-          ? doc.head.querySelectorAll("style").length
-          : 0;
-        const allStyleTags = doc.querySelectorAll("style").length;
-        const miscStyleFound = allStyleTags > headStyles;
-        const totalInline = doc.querySelectorAll("[style]").length;
-        const internalInHead = headStyles > 0 ? "YES" : "NO";
-        const inlineInBody = totalInline > 0 ? `YES (${totalInline})` : "NO";
-        const miscellaneous = miscStyleFound ? "YES" : "NO";
-        const issues = [];
-        let localCustomFound = false;
-        let orderViolation = false;
-
-        links.forEach((l) => {
-          const path = (l.rel || "").trim();
-          const isExternal =
-            path.startsWith("http") ||
-            path.startsWith("//") ||
-            path.includes("font") ||
-            path.includes("reset") ||
-            path.includes("icon") ||
-            path.includes("lib");
-          if (!isExternal && path !== "") {
-            const cleanPath = path.split("?")[0];
-            const filename = cleanPath.split("/").pop();
-            const hygiene = /^[a-z0-9._-]+$/i.test(filename);
-            if (!hygiene && filename !== "")
-              issues.push(`Non-ASCII local filename: ${filename}`);
-            localCustomFound = true;
-          }
-          if (isExternal && localCustomFound) {
-            orderViolation = true;
-          }
-        });
-
-        const pills = links
-          .map((l) => {
-            const path = (l.rel || "").trim().split("?")[0];
-            const fileName = path.split("/").pop() || path;
-            const clipped =
-              fileName.length > 11
-                ? fileName.substring(0, 11) + "..."
-                : fileName;
-            return `<span class="tag-pill">${clipped}</span>`;
-          })
-          .join(" ");
-
-        const sequenceStatus = orderViolation ? "FAIL" : "PASS";
-        const structuralFlaw =
-          headStyles > 0 ||
-          totalInline > 0 ||
-          issues.length > 0 ||
-          orderViolation ||
-          miscStyleFound;
-
-        return {
-          feature: "CSS Architecture",
-          basic: structuralFlaw ? "Severe Fail" : "Stable External",
-          advanced: `External files: ${links.length}<br><div style="margin: 5px 0 10px 0;">${pills || "None"}</div>Internal Stylesheet (head): ${internalInHead}<br>Inline styles (body): ${inlineInBody}<br>Miscellaneous style(s): ${miscellaneous}<br>Asset sequence: <strong>${sequenceStatus}</strong><ul class="audit-list">${orderViolation ? '<li class="status-major">Asset Load Error: External resources found after local style.</li>' : ""}${miscStyleFound ? '<li class="status-major">Miscellaneous Error: Style block detected outside head zone.</li>' : ""}${issues.map((i) => `<li class="status-major">${i}</li>`).join("")}</ul>`,
-          score: structuralFlaw ? 2 : 0,
+          advanced: `<strong>Density: ${commentRatio.toFixed(1)}%</strong><br>Lines: ${totalLines}<br>Issues: ${issues.length || "None detected"}<br><ul class="audit-list">${issues.map((i) => `<li class="status-major">${i}</li>`).join("")}</ul>`,
+          score: Math.max(score, commScore),
           type: "basic",
         };
       }
@@ -915,68 +774,23 @@
           { selector: 'link[rel*="icon"]', label: "Favicon" },
           { selector: 'meta[name="theme-color"]', label: "Theme Color" },
         ];
-        const foundCount = checks.filter((c) =>
-          doc.querySelector(c.selector),
-        ).length;
-        const pills = checks
-          .map((c) => {
-            const exists = !!doc.querySelector(c.selector);
-            return `<span class="tag-pill ${exists ? "" : "tag-missing"}">${exists ? c.label : "<del>" + c.label + "</del>"}</span>`;
-          })
-          .join(" ");
+        const found = checks
+          .filter((c) => doc.querySelector(c.selector))
+          .map((c) => c.label);
+        const missing = checks
+          .filter((c) => !doc.querySelector(c.selector))
+          .map((c) => c.label);
         return {
           feature: "Meta Info",
-          basic: `${foundCount} / ${checks.length} found`,
-          advanced: `<div style="margin-bottom:10px">${pills}</div>`,
-          score: foundCount >= 4 ? 0 : 1,
+          basic: found.length >= 4 ? "Optimal" : "Warning",
+          advanced: `<ul class="audit-list">${found.map((l) => `<li class="status-optimal">${l}</li>`).join("")}${missing.map((l) => `<li class="tag-missing"><del>${l}</del></li>`).join("")}</ul>`,
+          score: found.length >= 4 ? 0 : 1,
           type: "basic",
         };
       }
 
-      function auditLandmarks(doc) {
-        const std = [
-          "header",
-          "nav",
-          "main",
-          "section",
-          "article",
-          "aside",
-          "footer",
-        ];
-        const foundCount = std.filter((t) => doc.querySelector(t)).length;
-        const pills = std
-          .map((t) => {
-            const exists = !!doc.querySelector(t);
-            return `<span class="tag-pill ${exists ? "" : "tag-missing"}">${exists ? t.toUpperCase() : "<del>" + t.toUpperCase() + "</del>"}</span>`;
-          })
-          .join(" ");
-        const leaves = doc.querySelectorAll(
-          "main section, main article, nav ul",
-        );
-        const breadcrumbs = Array.from(leaves)
-          .slice(0, 5)
-          .map((el) => {
-            let path = [];
-            let curr = el;
-            while (curr && curr.tagName !== "BODY") {
-              path.unshift(curr.tagName.toLowerCase());
-              curr = curr.parentElement;
-            }
-            return `<div class="hierarchy-chain">body > ${path.join(" > ")}</div>`;
-          })
-          .join("");
-        return {
-          feature: "HTML5 Landmarks",
-          basic: foundCount >= 4 ? "Optimal" : "Attention",
-          advanced: `<div style="margin-bottom:10px">${pills}</div><strong>Hierarchy Samples:</strong>${breadcrumbs || "<li>None</li>"}`,
-          score: foundCount >= 4 ? 0 : 1,
-          type: "basic",
-        };
-      }
-
-      function auditSelectors(doc, rules) {
-        const designRules = getDesignRules(rules);
-        const hasUniversal = designRules.some((r) => r.selector.trim() === "*");
+      function auditCSSSelectors(doc, rules) {
+        const hasUniversal = rules.some((r) => r.selector.trim() === "*");
         const excluded = [
           "head",
           "meta",
@@ -985,40 +799,29 @@
           "script",
           "style",
           "noscript",
-          "html",
         ];
-        const allElements = Array.from(doc.querySelectorAll("*"));
-        const contentTags = [
-          ...new Set(
-            allElements
-              .map((el) => el.tagName.toLowerCase())
-              .filter((t) => !excluded.includes(t)),
-          ),
-        ];
-        const styledTags = contentTags.filter((tag) =>
-          designRules.some((r) => r.selector.toLowerCase().includes(tag)),
+        const contentElements = Array.from(doc.querySelectorAll("*")).filter(
+          (el) => !excluded.includes(el.tagName.toLowerCase()),
         );
-        const pills = contentTags
-          .map((tag) => {
-            const isStyled = styledTags.includes(tag);
-            return `<span class="tag-pill ${isStyled ? "" : "tag-missing"}">${isStyled ? tag : "<del>" + tag + "</del>"}</span>`;
-          })
-          .join(" ");
+        const allTags = [
+          ...new Set(contentElements.map((el) => el.tagName.toLowerCase())),
+        ];
+        const matched = allTags.filter((tag) =>
+          rules.some((r) => r.selector.toLowerCase().includes(tag)),
+        );
+
         const firstId = doc.querySelector("[id]")?.id || "None";
-        const firstClass =
-          doc.querySelector("[class]")?.className.split(" ")[0] || "None";
-        const complexRule = designRules.find(
-          (r) => /[>~+]|\s{2,}/.test(r.selector) && !r.selector.startsWith("@"),
+        const overloaded = contentElements.find(
+          (el) => el.classList.length > 1,
         );
-        const overloaded = allElements.find((el) => el.classList.length > 1);
-        const articulationSample = overloaded
-          ? `<span class="sample-text">&lt;${overloaded.tagName.toLowerCase()} class="${overloaded.className}"&gt;</span>`
-          : "None";
+        const complexRule = rules.find(
+          (r) => /[>~+]|\w\s\w/.test(r.selector) && !r.selector.startsWith("@"),
+        );
 
         return {
           feature: "CSS Selectors",
-          basic: hasUniversal ? "Optimal Reset" : "Warning",
-          advanced: `<div style="margin-bottom:10px">${pills}</div>Ratio: ${styledTags.length}/${contentTags.length} styled<br>First ID: #${firstId} | Class: .${firstClass}<br>Articulation: ${articulationSample}<br>Complex: ${complexRule ? `<span class="sample-text">${complexRule.selector}</span>` : "None"}`,
+          basic: hasUniversal ? "Optimal Reset" : "Warning: No Universal *",
+          advanced: `Ratio: ${matched.length}/${allTags.length}<br>ID Found: ${firstId}<br>Artic: ${overloaded ? "Overload found" : "None"}<br>Complex: ${complexRule ? "Detected" : "None"}`,
           score: hasUniversal ? 0 : 1,
           type: "basic",
         };
@@ -1026,7 +829,6 @@
 
       function auditIdentity(doc, rules) {
         const landmarks = [
-          "body",
           "header",
           "nav",
           "main",
@@ -1034,7 +836,7 @@
           "article",
           "footer",
         ];
-        const details = landmarks
+        const landmarkDetails = landmarks
           .map((tag) => {
             const el = doc.querySelector(tag);
             if (!el) return null;
@@ -1047,85 +849,116 @@
             };
           })
           .filter((i) => i);
-        const bodyEl = doc.querySelector("body");
-        const firstChild = bodyEl ? bodyEl.firstElementChild : null;
-        let wrapperHtml = "";
-        if (firstChild && firstChild.tagName === "DIV") {
-          const wrapId = firstChild.id ? `#${firstChild.id}` : "None";
-          const wrapClass = firstChild.className
-            ? `.${firstChild.className.split(" ").join(" .")}`
-            : "None";
-          wrapperHtml = `<li>WRAPPER (body > div): ID[${wrapId}] CLS[${wrapClass}]</li>`;
-        } else {
-          wrapperHtml = `<li>WRAPPER (body > div): Not found</li>`;
-        }
-        const getSamples = (type) =>
-          rules
-            .filter((r) => r.style.position === type)
-            .slice(0, 2)
-            .map((r) => `<code>${r.selector}</code>`);
-        const rel = getSamples("relative");
-        const abs = getSamples("absolute");
-        const fix = getSamples("fixed");
-        const stk = getSamples("sticky");
-        const totalPosCount = rules.filter((r) =>
-          ["absolute", "fixed", "sticky", "relative"].includes(
-            r.style.position,
-          ),
-        ).length;
-        let posHtml = `Positioning: ${totalPosCount} declarations found.<br><strong>Relative:</strong> ${rel.join(", ") || " "}<br><strong>Absolute:</strong> ${abs.join(", ") || " "}<br><strong>Fixed:</strong> ${fix.join(", ") || " "}<br><strong>Sticky:</strong> ${stk.join(", ") || " "}`;
+        const redundant = Array.from(doc.querySelectorAll("[id]")).filter(
+          (el) => el.tagName.toLowerCase() === el.id,
+        );
+        const hasTopId = !!doc.querySelector("body[id], header[id], #top");
+        let posCount = 0;
+        rules.forEach((r) => {
+          if (r.style.position === "absolute" || r.style.position === "fixed")
+            posCount++;
+        });
+        const posRatio = posCount / (rules.length || 1);
         return {
           feature: "Identity & Box Model",
-          basic: details.length >= 4 ? "Stable Identity" : "Attention",
-          advanced: `<ul class="audit-list">${details.map((i) => `<li>${i.tag}: ID[${i.id}] CLS[${i.classes}]</li>`).join("")}${wrapperHtml}</ul>${posHtml}`,
-          score: details.length >= 4 ? 0 : 1,
+          basic:
+            redundant.length === 0 && hasTopId
+              ? "Optimal Identity"
+              : "Severe Redundancy",
+          advanced: `<strong>Landmarks:</strong><ul class="audit-list">${landmarkDetails.map((i) => `<li>${i.tag}: ID[${i.id}] CLS[${i.classes}]</li>`).join("")}</ul>Abs/Fixed: ${posCount} (${Math.round(posRatio * 100)}%)`,
+          score: posRatio > 0.2 || redundant.length > 0 ? 2 : 0,
           type: "advanced",
         };
       }
 
-      function auditTypography(rules, rawCSS, varMap) {
-        const host = sandboxHost;
-        const root = host.shadowRoot || host.attachShadow({ mode: "open" });
-        root.innerHTML = `<style>${rawCSS}</style><div id="container"></div>`;
-        const container = root.getElementById("container");
-        const tags = ["h1", "h2", "h3", "p", "a", "ul", "body"];
-        const rep = {};
-        tags.forEach((t) => {
-          const el = document.createElement(t);
-          el.textContent = "SPECIMEN";
-          if (t === "a") el.href = "#";
-          container.appendChild(el);
-          const computedSize = window.getComputedStyle(el).fontSize;
-          let rawValue = "Inherited";
-          rules.forEach((ru) => {
-            if (ru.selector.toLowerCase() === t && ru.style["font-size"])
-              rawValue = resolveValue(ru.style["font-size"], varMap);
-          });
-          rep[t] = `${rawValue} (${computedSize})`;
+      function auditMastery(doc, rawCSS) {
+        const checks = [
+          { pattern: /@font-face/i, label: "Webfonts (@font-face)" },
+          { pattern: /--[a-zA-Z0-9-]+:/i, label: "CSS Variables" },
+          { pattern: /:hover/i, label: "Pseudo: :hover" },
+          { pattern: /:focus/i, label: "Pseudo: :focus" },
+          { pattern: /display:\s*grid/i, label: "CSS Grid" },
+          { pattern: /display:\s*flex/i, label: "Flexbox" },
+          { pattern: /clamp\(/i, label: "Clamp() Scaling" },
+          { tag: "strong", label: "Semantic: strong" },
+          { tag: "em", label: "Semantic: em" },
+          { tag: "time", label: "Semantic: time" },
+          { pattern: /&copy;|&#169;/i, label: "Entity: &copy;" },
+        ];
+        const found = [];
+        const missing = [];
+        checks.forEach((c) => {
+          let p = c.tag ? !!doc.querySelector(c.tag) : c.pattern.test(rawCSS);
+          if (p) found.push(c.label);
+          else missing.push(c.label);
         });
-        const isPInherited = rep["p"].includes("Inherited");
         return {
-          feature: "Typographic Scale",
-          basic: isPInherited ? "Attention" : "Stable",
-          advanced: `<ul class="audit-list">${Object.entries(rep)
-            .map(([t, d]) => `<li>${t.toUpperCase()}: ${d}</li>`)
-            .join("")}</ul>`,
-          score: isPInherited ? 1 : 0,
-          type: "basic",
+          feature: "Exploration & Mastery",
+          basic: `Found: ${found.length} | Missing: ${missing.length}`,
+          advanced: `<ul class="audit-list">${found.map((l) => `<li class="status-optimal">${l}</li>`).join("")}${missing.map((l) => `<li class="tag-missing"><del>${l}</del></li>`).join("")}</ul>`,
+          score: found.length > 5 ? 0 : 1,
+          type: "advanced",
         };
       }
 
-      function auditContrast(doc, rules, varMap) {
+      function auditRWDUnits(rules) {
+        const rel = ["rem", "em", "%", "vw", "vh", "dvh", "clamp", "calc"];
+        const optSample = [];
+        const badSample = [];
+        let relCount = 0,
+          fixCount = 0;
+        rules.forEach((rule) => {
+          const isSafeCtx =
+            !!rule.media ||
+            rule.selector.toLowerCase() === "html" ||
+            rule.selector.toLowerCase() === "body";
+          Object.entries(rule.style).forEach(([prop, val]) => {
+            if (rel.some((u) => val.toLowerCase().includes(u))) {
+              relCount++;
+              if (optSample.length < 5)
+                optSample.push(`${rule.selector} -> ${prop}: ${val}`);
+            }
+            if (
+              val.includes("px") ||
+              val.includes("pt") ||
+              val.includes("cm")
+            ) {
+              if (
+                !(
+                  isSafeCtx ||
+                  prop.startsWith("min-") ||
+                  prop.startsWith("max-")
+                )
+              ) {
+                fixCount++;
+                if (badSample.length < 10)
+                  badSample.push(`${rule.selector} -> ${prop}: ${val}`);
+              }
+            }
+          });
+        });
+        const ratio = fixCount / (relCount + fixCount || 1);
+        return {
+          feature: "RWD Unit Logic",
+          basic: ratio > 0.2 ? "Critical" : "Stable",
+          advanced: `<strong>Optimal:</strong><ul class="audit-list">${optSample.map((i) => `<li>${i}</li>`).join("")}</ul><strong>Issues:</strong><ul class="audit-list">${badSample.map((i) => `<li class="unit-major">${i}</li>`).join("")}</ul>`,
+          score: ratio > 0.2 ? 2 : ratio > 0.05 ? 1 : 0,
+          type: "advanced",
+        };
+      }
+
+      function auditContrast(doc, rules) {
+        const varMap = getVariableMap(rules);
         const zones = [
-          { name: "Body Context", sel: "body" },
-          { name: "Body Links", sel: "body a" },
-          { name: "Nav Links", sel: "nav a" },
-          { name: "Main H1", sel: "main h1" },
+          { name: "Body", sel: "body" },
+          { name: "Nav a", sel: "nav a" },
+          { name: "Main a", sel: "main a" },
           { name: "Main P", sel: "main p" },
+          { name: "Main H1", sel: "main h1" },
         ];
         const res = zones.map((zone) => {
           const el = doc.querySelector(zone.sel);
-          if (!el) return { ...zone, missing: true };
+          if (!el) return { ...zone, ratio: 21, sev: "optimal", missing: true };
           let lineage = [];
           let curr = el;
           while (curr && curr !== doc.documentElement) {
@@ -1133,12 +966,11 @@
             curr = curr.parentElement;
           }
           const style = getSimulatedStyle(lineage, rules, varMap);
-          const canvas = document.createElement("canvas");
-          const ctxCanvas = canvas.getContext("2d");
-          ctxCanvas.fillStyle = style.color || "#000000";
-          const fHex = ctxCanvas.fillStyle;
-          ctxCanvas.fillStyle = style.bg || "#FFFFFF";
-          const bHex = ctxCanvas.fillStyle;
+          const canvas = document.createElement("canvas").getContext("2d");
+          canvas.fillStyle = style.color || "#000000";
+          const fHex = canvas.fillStyle;
+          canvas.fillStyle = style.bg || "#FFFFFF";
+          const bHex = canvas.fillStyle;
           const parse = (h) => ({
             r: parseInt(h.substring(1, 3), 16),
             g: parseInt(h.substring(3, 5), 16),
@@ -1165,22 +997,6 @@
             sev: rVal >= 7 ? "optimal" : rVal >= 4.5 ? "minor" : "major",
           };
         });
-        const samples = res
-          .filter((r) => !r.missing)
-          .map((r) => {
-            const isAA = r.ratio >= 4.5;
-            const isAAA = r.ratio >= 7.0;
-            const aaStatus = isAA
-              ? '<span class="wcag-status wcag-pass">AA Pass</span>'
-              : '<span class="wcag-status wcag-fail">AA Fail</span>';
-            const aaaStatus = isAA
-              ? isAAA
-                ? '<span class="wcag-status wcag-pass">AAA Pass</span>'
-                : '<span class="wcag-status wcag-fail">AAA Fail</span>'
-              : "";
-            return `<div class="contrast-context-box" style="border-left-color:var(--${r.sev === "optimal" ? "terminal-green" : r.sev === "minor" ? "accent-yellow" : "accent-red"})"><strong>${r.name}</strong><div class="demo-pill" style="background-color:${r.bg};color:${r.fg}">Sample text</div><span class="contrast-meta">Ratio: ${r.ratio.toFixed(2)}:1 [ ${aaStatus}${aaaStatus ? " | " + aaaStatus : ""} ]</span></div>`;
-          })
-          .join("");
         const palette = [
           ...new Set(
             res.filter((r) => !r.missing).flatMap((r) => [r.fg, r.bg]),
@@ -1188,144 +1004,24 @@
         ];
         return {
           feature: "Color Contrast",
-          basic: res.some((r) => r.ratio < 4.5) ? "Severe Fail" : "Stable",
-          advanced: `<strong>Samples:</strong>${samples}<div class="swatch-grid">${palette.map((c) => `<div class="swatch-item"><div class="swatch" style="background-color:${c}"></div>${c}</div>`).join("")}</div>`,
+          basic: res.some((r) => r.ratio < 4.5) ? "Severe Failures" : "Stable",
+          advanced:
+            res
+              .map((r) =>
+                r.missing
+                  ? ""
+                  : `<div class="contrast-context-box" style="border-left-color:var(--${r.sev === "optimal" ? "terminal-green" : r.sev === "minor" ? "accent-yellow" : "accent-red"})"><strong>${r.name}</strong><div class="demo-pill" style="background-color:${r.bg};color:${r.fg}">Sample text</div><span class="contrast-meta">Ratio: ${r.ratio.toFixed(2)}:1</span></div>`,
+              )
+              .join("") +
+            `<div class="swatch-grid">${palette.map((c) => `<div class="swatch-item"><div class="swatch" style="background-color:${c}"></div>${c}</div>`).join("")}</div>`,
           score: res.some((r) => r.ratio < 4.5) ? 2 : 0,
           type: "basic",
         };
       }
 
-      function auditRWDUnits(rules, rawCSS) {
-        const designRules = getDesignRules(rules);
-        const rel = ["rem", "em", "%", "vw", "vh", "dvh", "clamp", "calc"];
-        const fix = ["px", "pt", "cm", "mm", "in", "pc"];
-        const optSample = [];
-        const badSample = [];
-        const mqChecks = [
-          { pattern: /@media/i, label: "@media" },
-          { pattern: /screen/i, label: "screen" },
-          { pattern: /print/i, label: "print" },
-          { pattern: /orientation/i, label: "orientation" },
-          { pattern: /width/i, label: "width" },
-        ];
-        const mqPills = mqChecks
-          .map((c) => {
-            const exists = c.pattern.test(rawCSS);
-            return `<span class="tag-pill ${exists ? "" : "tag-missing"}">${exists ? c.label : "<del>" + c.label + "</del>"}</span>`;
-          })
-          .join(" ");
-
-        const minWidthCount = (rawCSS.match(/min-width/gi) || []).length;
-        const maxWidthCount = (rawCSS.match(/max-width/gi) || []).length;
-        let strategy = "";
-        if (minWidthCount > 0 || maxWidthCount > 0) {
-          if (maxWidthCount > 0 && maxWidthCount >= minWidthCount)
-            strategy =
-              '<span class="status-major">FALSE (Desktop-first)</span>';
-          else if (minWidthCount > 0 && maxWidthCount === 0)
-            strategy =
-              '<span class="status-optimal">TRUE (Mobile-first)</span>';
-          else
-            strategy =
-              '<span class="status-minor">WARNING (Mixed/Sandwich)</span>';
-        }
-
-        designRules.forEach((rule) => {
-          const isSafeCtx =
-            !!rule.media ||
-            rule.selector.toLowerCase() === "html" ||
-            rule.selector.toLowerCase() === "body";
-          Object.entries(rule.style).forEach(([prop, val]) => {
-            if (rel.some((u) => val.toLowerCase().includes(u))) {
-              if (optSample.length < 5)
-                optSample.push(`<li>${rule.selector} -> ${val}</li>`);
-            }
-            if (fix.some((u) => new RegExp(`\\d${u}`, "i").test(val))) {
-              if (
-                !(
-                  isSafeCtx ||
-                  prop.startsWith("min-") ||
-                  prop.startsWith("max-")
-                )
-              ) {
-                if (badSample.length < 5)
-                  badSample.push(
-                    `<li class="unit-major">${rule.selector} -> ${val}</li>`,
-                  );
-              }
-            }
-          });
-        });
-        return {
-          feature: "RWD Unit Logic",
-          basic: badSample.length > 0 ? "Critical" : "Stable",
-          advanced: `<strong>Optimal:</strong><ul class="audit-list">${optSample.join("")}</ul><strong>Issues:</strong><ul class="audit-list">${badSample.join("")}</ul><hr style="margin:10px 0; border:0; border-top:1px solid #333;"><strong>Media Queries:</strong><br>${mqPills}<br>Progressive enhancement: ${strategy}`,
-          score: badSample.length > 0 ? 2 : 0,
-          type: "advanced",
-        };
-      }
-
-      // --- MODULE: Exploration & Mastery (v1.9.40 Aggregated Design Buffer) ---
-      function auditMastery(doc, rawHTML, designCSS) {
-        const checks = [
-          { pattern: /@font-face/i, label: "Webfonts (@font-face)" },
-          { pattern: /--[a-zA-Z0-9-]+:/i, label: "CSS Variables" },
-          { pattern: /:hover/i, label: "Pseudo: :hover" },
-          { pattern: /:focus/i, label: "Pseudo: :focus" },
-          { pattern: /animation:|@keyframes/i, label: "Animations" },
-          { pattern: /transition:/i, label: "Transitions" },
-          { pattern: /display:\s*grid/i, label: "CSS Grid" },
-          { pattern: /display:\s*flex/i, label: "Flexbox" },
-          { pattern: /clamp\(/i, label: "Clamp() Scaling" },
-          { tag: "strong", label: "Semantic: strong" },
-          { tag: "em", label: "Semantic: em" },
-          { tag: "q", label: "Semantic: q" },
-          { tag: "time", label: "Semantic: time" },
-          { raw: /&copy;|&#169;|©/i, label: "Entity: ©" },
-          { pattern: /calc\(/i, label: "CSS calc()" },
-          { pattern: /min\(|max\(/i, label: "CSS min()/max()" },
-          { pattern: /:has\(/i, label: "Pseudo :has()" },
-          { pattern: /:is\(/i, label: "Pseudo :is()" },
-          { pattern: /:where\(/i, label: "Pseudo :where()" },
-          { pattern: /:not\(/i, label: "Pseudo :not()" },
-          { pattern: /:checked/i, label: "Pseudo :checked()" },
-          { pattern: /prefers-color-scheme/i, label: "prefers-color-scheme" },
-          {
-            pattern: /animation-timeline|scroll\(/i,
-            label: "Scroll/Timeline Anim",
-          },
-          { pattern: /\[popover\]|:popover-open/i, label: "CSS Popover" },
-          { tag: "details", label: "CSS Accordion (Details)" },
-        ];
-
-        const foundCount = checks.filter((c) => {
-          if (c.tag) return !!doc.querySelector(c.tag);
-          if (c.raw) return c.raw.test(rawHTML);
-          return c.pattern.test(designCSS);
-        }).length;
-
-        const pills = checks
-          .map((c) => {
-            let exists = false;
-            if (c.tag) exists = !!doc.querySelector(c.tag);
-            else if (c.raw) exists = c.raw.test(rawHTML);
-            else exists = c.pattern.test(designCSS);
-            return `<span class="tag-pill ${exists ? "" : "tag-missing"}">${exists ? c.label : "<del>" + c.label + "</del>"}</span>`;
-          })
-          .join(" ");
-
-        return {
-          feature: "Exploration & Mastery",
-          basic: `Found: ${foundCount} / ${checks.length}`,
-          advanced: `<div style="margin-bottom:10px">${pills}</div>`,
-          score: foundCount > 5 ? 0 : 1,
-          type: "advanced",
-        };
-      }
-
       async function startManualAnalysis(html, css) {
         loader.style.display = "block";
-        output.innerHTML = `<tr><td colspan="3">BYPASS ACTIVE...</td></tr>`;
+        output.innerHTML = `<tr><td colspan="3">BYPASS ACTIVE. Parsing local data...</td></tr>`;
         try {
           const parser = new DOMParser();
           const doc = parser.parseFromString(html, "text/html");
@@ -1342,7 +1038,7 @@
         const adenda =
           SCAN_PHRASES[Math.floor(Math.random() * SCAN_PHRASES.length)];
         loader.style.display = "block";
-        output.innerHTML = `<tr><td colspan="3">SCANNING... v1.9.40 Deep Audit. ${adenda}</td></tr>`;
+        output.innerHTML = `<tr><td colspan="3">SCANNING... v1.9.13 Deep Audit. ${adenda}</td></tr>`;
         try {
           const htmlStr = await fetchWithRetry(url);
           const parser = new DOMParser();
@@ -1351,48 +1047,27 @@
             doc.querySelectorAll('link[rel="stylesheet"]'),
           ).map((l) => ({
             rel: l.getAttribute("href"),
-            abs: new URL(l.getAttribute("href") || "", url).href,
+            abs: new URL(l.getAttribute("href"), url).href,
           }));
-
-          let cssCombined = "";
-          let rulesAggregated = [];
-          let designCSSBuffer = ""; // Concatenated student design CSS only
-
+          let css = "";
           for (let l of links) {
             try {
-              const cssText = await fetchWithRetry(l.abs, 1);
-              cssCombined += cssText;
-
-              const filename = l.rel.toLowerCase();
-              const isBoilerplate =
-                filename.includes("reset.css") ||
-                filename.includes("fonts.css") ||
-                filename.startsWith("http") ||
-                filename.startsWith("//");
-
-              if (!isBoilerplate) {
-                designCSSBuffer += cssText;
-              }
-
-              rulesAggregated = rulesAggregated.concat(
-                parseCSSRules(cssText, l.rel),
-              );
+              css += await fetchWithRetry(l.abs, 1);
             } catch (e) {}
           }
-
+          const rules = parseCSSRules(css);
           performDiagnosticCore(
             doc,
             htmlStr,
-            cssCombined,
-            rulesAggregated,
+            css,
+            rules,
             links,
             url.split("/").pop(),
-            designCSSBuffer,
           );
         } catch (err) {
           output.innerHTML = `<tr><td colspan="3" class="status-major">CRITICAL FAILURE: ${err.message}. Try "Manual Patch" mode.</td></tr>`;
           summaryText.classList.remove("blink");
-          summaryText.innerText = "Connection failed.";
+          summaryText.innerText = "Connection failed. Umbilical link severed.";
         } finally {
           loader.style.display = "none";
         }
@@ -1405,20 +1080,67 @@
         rules,
         links,
         filename,
-        designCSSBuffer = "",
       ) {
-        const varMap = getVariableMap(rules);
         const results = [];
         results.push(auditHTMLIntegrity(rawHTML));
-        results.push(auditCSSArchitecture(doc, links));
+        const hasStyleTags = doc.querySelectorAll("style").length > 0;
+        results.push({
+          feature: "CSS Architecture",
+          basic: hasStyleTags ? "Severe: Internal styles" : "Stable",
+          advanced: `Linked: ${links.length} files<br>${links.map((l) => l.rel).join(", ")}`,
+          score: hasStyleTags ? 2 : 0,
+          type: "basic",
+        });
         results.push(auditMetaInfo(doc));
-        results.push(auditLandmarks(doc));
-        results.push(auditSelectors(doc, rules));
+        const std = [
+          "header",
+          "nav",
+          "main",
+          "section",
+          "article",
+          "aside",
+          "footer",
+        ];
+        results.push({
+          feature: "HTML5 Landmarks",
+          basic:
+            std.filter((t) => doc.querySelector(t)).length >= 4
+              ? "Optimal"
+              : "Attention",
+          advanced: std
+            .map(
+              (t) =>
+                `<span class="tag-pill ${doc.querySelector(t) ? "" : "tag-missing"}">${doc.querySelector(t) ? t.toUpperCase() : "<del>" + t.toUpperCase() + "</del>"}</span>`,
+            )
+            .join(" "),
+          score: std.filter((t) => doc.querySelector(t)).length >= 4 ? 0 : 1,
+          type: "basic",
+        });
+        results.push(auditCSSSelectors(doc, rules));
         results.push(auditIdentity(doc, rules));
-        results.push(auditTypography(rules, rawCSS, varMap));
-        results.push(auditContrast(doc, rules, varMap));
-        results.push(auditRWDUnits(rules, rawCSS));
-        results.push(auditMastery(doc, rawHTML, designCSSBuffer || rawCSS));
+        const varMap = getVariableMap(rules);
+        const tags = ["body", "h1", "h2", "h3", "p", "a", "ul"];
+        const rep = {};
+        tags.forEach((t) => {
+          let r = "Inherited";
+          rules.forEach((ru) => {
+            if (ru.selector.toLowerCase() === t && ru.style["font-size"])
+              r = resolveValue(ru.style["font-size"], varMap);
+          });
+          rep[t] = r;
+        });
+        results.push({
+          feature: "Typographic Scale",
+          basic: rep.p === "Inherited" ? "Attention" : "Stable",
+          advanced: Object.entries(rep)
+            .map(([t, d]) => `<li>${t.toUpperCase()}: ${d}</li>`)
+            .join(""),
+          score: 0,
+          type: "basic",
+        });
+        results.push(auditContrast(doc, rules));
+        results.push(auditRWDUnits(rules));
+        results.push(auditMastery(doc, rawCSS));
         renderResults(results);
       }
 
@@ -1426,59 +1148,71 @@
         output.innerHTML = "";
         let major = 0,
           minor = 0,
-          bT = 0,
-          bP = 0,
-          aT = 0,
-          aP = 0;
+          bScore = 0,
+          bCount = 0,
+          aScore = 0,
+          aCount = 0;
+
         results.forEach((r) => {
           if (r.score === 2) major++;
           else if (r.score === 1) minor++;
           if (r.type === "basic") {
-            bT++;
-            if (r.score === 0) bP++;
+            bScore += r.score;
+            bCount++;
           } else {
-            aT++;
-            if (r.score === 0) aP++;
+            aScore += r.score;
+            aCount++;
           }
-          const lvl = getLevelFromScore(r.score);
-          output.innerHTML += `<tr><td>${r.feature}</td><td class="status-${r.score === 0 ? "optimal" : r.score === 1 ? "minor" : "major"}">${r.basic}<br><small>${lvl.name}</small></td><td>${r.advanced}</td></tr>`;
+
+          const level = getLevelFromScore(r.score);
+          output.innerHTML += `<tr><td>${r.feature}</td><td class="status-${r.score === 0 ? "optimal" : r.score === 1 ? "minor" : "major"}">${r.basic}<br><small>${level.name}</small></td><td>${r.advanced}</td></tr>`;
         });
-        document.getElementById("basic-rating").innerText =
-          `${bP} / ${bT} (${Math.round((bP / bT) * 100)}%) passed`;
-        document.getElementById("advanced-rating").innerText =
-          `${aP} / ${aT} (${Math.round((aP / aT) * 100)}%) detected`;
+
+        const bLvl = getLevelFromScore(Math.ceil(bScore / (bCount || 1)));
+        const aLvl = getLevelFromScore(Math.ceil(aScore / (aCount || 1)));
+
+        document.getElementById("basic-rating").innerText = bLvl.status;
+        document.getElementById("basic-level").innerText = `LVL: ${bLvl.name}`;
+        document.getElementById("advanced-rating").innerText = aLvl.status;
+        document.getElementById("advanced-level").innerText =
+          `LVL: ${aLvl.name}`;
         document.getElementById("issue-counts").innerText =
           `Major: ${major} | Minor: ${minor}`;
+
         summaryText.classList.remove("blink");
         const grade = document.getElementById("summary-grade");
         const finalLvl = getLevelFromScore(major > 0 ? 2 : minor > 0 ? 1 : 0);
         grade.innerText = finalLvl.name;
-        grade.className =
-          finalLvl.status === "Optimal" || finalLvl.status === "Stable"
-            ? "status-optimal"
-            : finalLvl.status === "Warning" || finalLvl.status === "Attention"
-              ? "status-minor"
-              : "status-major";
+        grade.className = finalLvl.status.toLowerCase().includes("optimal")
+          ? "status-optimal"
+          : finalLvl.status.toLowerCase().includes("warning")
+            ? "status-minor"
+            : "status-major";
         summaryText.innerText = finalLvl.msg;
         summary.style.display = "block";
       }
 
       function getLevelFromScore(score) {
-        const majorW = ["Critical", "Severe", "Dangerous"],
-          minorW = ["Warning", "Attention"],
-          optW = ["Optimal", "Stable"];
+        const majorWords = ["Critical", "Severe", "Dangerous"];
+        const minorWords = ["Warning", "Attention"];
+        const optWords = ["Optimal", "Stable"];
         const rand = (arr) => arr[Math.floor(Math.random() * arr.length)];
+
         if (score === 2) {
-          const c = [ERROR_SCALE.VOID, ERROR_SCALE.ABYSS, ERROR_SCALE.NEURO][
-            Math.floor(Math.random() * 3)
-          ];
-          return { ...c, status: rand(majorW) };
+          const choice = [
+            ERROR_SCALE.VOID,
+            ERROR_SCALE.ABYSS,
+            ERROR_SCALE.NEURO,
+          ][Math.floor(Math.random() * 3)];
+          return { ...choice, status: rand(majorWords) };
         } else if (score === 1) {
-          const c = [ERROR_SCALE.DISSOCIATIVE, ERROR_SCALE.SYNAPTIC][
+          const choice = [ERROR_SCALE.DISSOCIATIVE, ERROR_SCALE.SYNAPTIC][
             Math.floor(Math.random() * 2)
           ];
-          return { ...c, status: rand(minorW) };
-        } else return { ...ERROR_SCALE.BIO, status: rand(optW) };
+          return { ...choice, status: rand(minorWords) };
+        } else {
+          return { ...ERROR_SCALE.BIO, status: rand(optWords) };
+        }
       }
     </script>
   </body>

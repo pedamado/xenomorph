@@ -1,5 +1,99 @@
 # Changelog
 
+- **Gemini 3 Pro AI changelog:** Somehow Gemini decides to purge some of the changelog versions/updates (and I forget to save them while iterating the builds)
+
+## **[1.9.40] - 2026-01-27**
+
+### **Fixed**
+
+- **Multi-File Aggregation:** Overhauled CSS processing to aggregate all local/relative .css files into a single "Design Buffer" for auditing.
+- **Strict Filtering:** Both CSS Selectors and Mastery modules now ignore reset.css, fonts.css, and any external absolute URLs (CDNs) to prevent interference with diagnostic accuracy.
+- **Typographic Scale:** Fixed a syntax error in the tag label rendering (added missing parentheses to .toUpperCase()).
+
+### **Added**
+
+- **Stability Lock:** Preserved Shadow DOM isolation for Typography measurements.
+- **Stability Lock:** Preserved Mobile-First vs. Desktop-First strategy analysis in the RWD module.
+- **Maintenance:** Updated footer and internal versioning to v1.9.40.
+
+## **[1.9.27] - 2026-01-27**
+
+### **Fixed**
+
+- **Module: CSS Selectors:** Implemented a strict origin filter. The auditor now ignores reset.css, fonts.css, and absolute external CSS links (webfonts/CDNs) to ensure metrics reflect student-authored design code.
+- **Module: RWD Unit Logic:** Unified the boilerplate filter to ignore reset and font files in responsive unit calculations.
+- **Diagnostic Accuracy:** Prioritizes analysis of style.css and styles.css whenever multiple local files are present.
+
+## **[1.9.26] - 2026-01-27**
+
+### **Added**
+
+- **Module: RWD Unit Logic:** Implemented boilerplate filtering. Rules originating from reset.css are now ignored in unit audits to ensure the diagnostic reflects the student's intentional responsive choices.
+- **Maintenance:** Updated footer and internal versioning to v1.9.26.
+
+## **[1.9.25] - 2026-01-27**
+
+### **Added**
+
+- **Module: Identity & Box Model:** Expanded positioning feedback. The auditor now extracts and displays up to 2 real-world examples for each positioning type (Relative, Absolute, Fixed, and Sticky) detected in the code.
+- **Maintenance:** Updated footer and internal versioning to v1.9.25.
+
+## **[1.9.24] - 2026-01-27**
+
+### **Added**
+
+- **Color Contrast Enhancements:** Implemented WCAG 2.1 level feedback (AA/AAA pass/fail status).
+
+## **[1.9.17] - 2026-01-27**
+
+### **Fixed**
+
+- **UI Restoration:** Brought back all missing examples, counts, and visual samples in the diagnostic table.
+- **Chromatic Auditor:** Fixed detection of text over container backgrounds and CSS Variable resolution. Restored color swatches and samples.
+- **Module Parity:** Re-aligned all modules to present the "First 5 Compliant" and "First 5 Failing" examples rule.
+
+### **Added**
+
+- **Visual Feedback:** Re-implemented the <del> and grey-out visual system for missing Landmarks, Meta tags, and Mastery skills.
+- **Quantitative Summary:** XX / YY (ZZ%) counts restored to the Basic and Advanced summary cards.
+
+## **[1.9.16] - 2026-01-27**
+
+### **Changed**
+
+- **Personality Purge:** Removed all references to Albert Kapr. Refocused on Alien/Weyland-Yutani cinematic themes.
+
+## **[1.9.10] - 2026-01-27**
+
+### **Added**
+
+- **UI Logic:** Implemented `position: sticky` for the `.input-organism` command interface. The "Umbilical Link" now remains fixed at the top of the viewport during deep diagnostic scrolls.
+- **UI Logic:** Added specific `z-index` layering and background persistence to the input area to prevent content overlap during navigation.
+
+### **Fixed**
+
+- **UX Stability:** Verified that recursive CSS variable resolution for both the Chromatic Auditor and Typographic Scale remains active and robust across all inspection modes.
+
+## **[1.9.9] - 2026-01-27**
+
+### **Fixed**
+
+- **Chromatic Auditor:** Implemented a recursive CSS Variable resolver. Mother can now "see" through `var()` declarations to audit the true color contrast of elements using custom property palettes.
+- **Typographic Audit:** Updated font-size detection to also resolve CSS variables if used for hierarchy scaling.
+
+## **[1.9.8] - 2026-01-27**
+
+### **Added**
+
+- **UI Logic:** "Waiting for data input..." is now visible initially.
+- **UI Logic:** The status message now blinks during active "Signal Lock" and disappears once the diagnostic report is generated.
+
+## **[1.9.7] - 2026-01-27**
+
+### **Changed**
+
+- **UI UX:** Diagnostic summary area is hidden during the scan to focus the terminal on synthetic adendas.
+
 ## **[1.9.6] - 2026-01-27**
 
 ### **Fixed**
